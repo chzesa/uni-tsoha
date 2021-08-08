@@ -1,12 +1,11 @@
 <a href="/">Back</a>
 
 {% for topic in topics %}
-<div>
-	<p>{{ topic.title }} (<a href="/topic/{{ topic.url }}">{{ topic.url }}</a>)
-	{% if topic.description %}
-		<p>{{ topic.description }}
-	{% else %}
-		<p>No description provided.
-	{% endif %}
-</div>
+<hr>
+<p>{{ topic.title }} (<a href="/topic/{{ topic.url }}">{{ topic.url }}</a>)
+{% if topic.description %}
+	<p>{{ topic.description }}
+{% else %}
+	<p>No description provided.
+{% endif %}
 {% endfor %}
