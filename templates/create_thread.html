@@ -13,6 +13,7 @@
 <p>Content (optional):<br>
 <textarea name="content" rows="2" cols="40"></textarea>
 
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 <input type="submit" value="Submit">
 
 </form>

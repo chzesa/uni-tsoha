@@ -40,6 +40,9 @@ def logout():
 	del session["username"]
 	del session["user_id"]
 
+def csrf_token():
+	return session.get("csrf_token", "")
+
 def user_id():
 	return session.get("user_id", 0);
 

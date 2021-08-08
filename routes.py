@@ -72,6 +72,9 @@ def create_topic():
 	title = form["title"]
 	description = form["description"]
 
+	if form["csrf_token"] != users.csrf_token():
+		return abort(403)
+
 	if not posts.is_valid_topic_url(url):
 		return error("Invalid topic url.", "/")
 
@@ -101,6 +104,9 @@ def create_thread():
 
 	if request.method == "GET":
 		return render_template("create_thread.html")
+
+	if form["csrf_token"] != users.csrf_token():
+		return abort(403)
 
 	form = request.form
 	topic = form["topic"]
