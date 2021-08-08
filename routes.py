@@ -1,5 +1,5 @@
 from app import app
-from flask import redirect, render_template, request
+from flask import redirect, render_template, request, abort
 import users
 import posts
 
@@ -92,20 +92,34 @@ def topics():
 	topics = posts.get_topics()
 	return render_template("topics.html", topics = topics)
 
-@app.route("/topic/<string:url>")
+@app.route("/topic/<string:url>", methods=["GET"])
 def topic(url):
 	threads = posts.get_threads(url)
 	return render_template("topic.html", threads = threads, topic=url )
 
 @app.route("/thread/<int:id>", methods=["GET"])
 def thread(id):
-	opener = posts.get_post(id)
+	opener = posts.get_thread(id)
 	replies = posts.get_replies(opener["post_id"])
 	return render_template("thread.html", opener=opener, replies=replies)
 
-@app.route("/reply/<int:id>", methods=["GET", "POST"])
+@app.route("/reply/<int:id>", methods=["POST"])
 def reply(id):
-	return redirect("/")
+	if not users.is_user():
+		return redirect("/login")
+
+	if not posts.is_opener(id):
+		return abort(403)
+
+	form = request.form
+	if form["csrf_token"] != users.csrf_token():
+		return abort(403)
+
+	content = form["content"]
+
+	posts.reply(id, content)
+	thread_id = posts.thread_id_from_opener_id(id)
+	return redirect("/thread/" + str(thread_id))
 
 @app.route("/create_thread/<string:url>", methods=["GET", "POST"])
 def create_thread(url):

@@ -1,16 +1,23 @@
 from db import db
 import users
 
+import re
 import validators
 
 def is_valid_topic_title(title):
-	return True
+	return title != "" and len(title) < 128
 
 def is_valid_topic_url(url):
-	return True
+	return re.match("\\w+", url) and len(url) > 3 and len(url) < 24
 
-def is_valud_thread_title(title):
-	return True
+def is_valid_thread_title(title):
+	return title != "" and len(title) < 128
+
+def is_valid_thread_link(url):
+	return validators.url(url)
+
+def is_valid_post_content(content):
+	return len(content) < 1024
 
 def create_thread(topic_url, title, url, content):
 	sql = """WITH
@@ -40,6 +47,7 @@ def create_thread(topic_url, title, url, content):
 def create_topic(url, title, description):
 	if not is_valid_topic_url(url) or not is_valid_topic_title(title):
 		return False
+
 	sql = """INSERT INTO topics(url, title, description, created, owner_id)
 		VALUES (:url, :title, :description, NOW(), :id);"""
 
@@ -59,8 +67,61 @@ def get_threads(topic):
 	return result.fetchall()
 
 
-def get_posts(thread_id):
-	return False
+def get_thread(thread_id):
+	sql = """SELECT posts.id, users.username, content.content, T1.title, T1.link, topics.url, topics.title
+		FROM (SELECT * FROM threads WHERE threads.id = :thread_id) AS T1
+		LEFT JOIN topics ON T1.topic_id = topics.id
+		LEFT JOIN posts ON T1.message_id = posts.id
+		LEFT JOIN content ON content.post_id = posts.id
+		LEFT JOIN users ON posts.user_id = users.id
+		ORDER BY content.edited DESC"""
+	result = db.session.execute(sql, {"thread_id": thread_id})
+	row = result.fetchone()
+	return {
+		"post_id": row.id,
+		"username": row.username,
+		"content": row.content,
+		"title": row[3],
+		"link": row.link,
+		"url": row.url,
+		"topic_title": row[6]
+	}
+
+def thread_id_from_opener_id(id):
+	sql = """SELECT threads.id FROM (SELECT * FROM posts WHERE posts.id = :post_id) AS T1
+		LEFT JOIN threads ON threads.id = T1.id"""
+	result = db.session.execute(sql, {"post_id": id})
+	return result.fetchone()[0]
+
+def get_replies(post_id):
+	sql = """SELECT content, username FROM
+		(SELECT content, user_id FROM
+			(SELECT  id, user_id FROM posts WHERE posts.parent_id = :post_id) AS T1
+			LEFT JOIN content ON T1.id = content.post_id
+		) AS T2
+		LEFT JOIN users ON users.id = T2.user_id"""
+	result = db.session.execute(sql, {"post_id": post_id})
+	rows = result.fetchall()
+	return rows
+
+def reply(post_id, content):
+	sql = """WITH
+		ins1 AS (
+			INSERT INTO posts(user_id, created, parent_id)
+			VALUES (:user_id, NOW(), :post_id)
+			RETURNING id
+		)
+		INSERT INTO content(content, edited, edited_by, post_id)
+		VALUES (:content, NOW(), :user_id, (SELECT id FROM ins1))
+		RETURNING post_id"""
+
+	result = db.session.execute(sql, {"user_id": users.user_id(), "post_id": post_id, "content": content})
+	db.session.commit()
+
+def is_opener(post_id):
+	sql = """SELECT parent_id FROM posts WHERE id=:post_id AND parent_id=NULL"""
+	result = db.session.execute(sql, {"post_id": post_id})
+	return result.fetchone() == None
 
 def get_topics():
 	sql = "SELECT * FROM topics;"
