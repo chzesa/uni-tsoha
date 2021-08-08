@@ -115,10 +115,11 @@ def create_thread(url):
 	if request.method == "GET":
 		return render_template("create_thread.html", topic=url)
 
+	form = request.form
+
 	if form["csrf_token"] != users.csrf_token():
 		return abort(403)
 
-	form = request.form
 	topic = form["topic"]
 	title = form["title"]
 	content = form["content"]
