@@ -117,6 +117,9 @@ def reply(id):
 
 	content = form["content"]
 
+	if not posts.is_valid_post_content(content):
+		return error("Replies must be under 1024 characters long.", "/")
+
 	posts.reply(id, content)
 	thread_id = posts.thread_id_from_opener_id(id)
 	return redirect("/thread/" + str(thread_id))
@@ -137,6 +140,15 @@ def create_thread(url):
 	title = form["title"]
 	link = form["link"]
 	content = form["content"]
+
+	if not posts.is_valid_thread_title(title):
+		return error("Invalid thread title.", "/")
+
+	if link != "" and not posts.is_valid_thread_link(link):
+		return error("Malformed link url", "/")
+
+	if link == "" and not posts.is_valid_post_content(content):
+		return error("Threads must have either a valid url or valid content")
 
 	post_id = posts.create_thread(url, title, link, content)
 
