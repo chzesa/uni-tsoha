@@ -8,7 +8,7 @@ def is_valid_topic_title(title):
 	return title != "" and len(title) < 128
 
 def is_valid_topic_url(url):
-	return re.match("\\w+", url) and len(url) > 3 and len(url) < 24
+	return re.match("\\w+", url) and len(url) > 2 and len(url) < 24
 
 def is_valid_thread_title(title):
 	return title != "" and len(title) < 128
@@ -17,7 +17,7 @@ def is_valid_thread_link(url):
 	return validators.url(url)
 
 def is_valid_post_content(content):
-	return len(content) < 1024
+	return len(content) > 0 and len(content) < 1024
 
 def create_thread(topic_url, title, url, content):
 	sql = """WITH
