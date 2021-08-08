@@ -1,11 +1,11 @@
 <a href="/topic/{{topic}}">Back</a>
 <p>Create new thread
-<form action="/create_thread" method="POST">
+<form action="/create_thread/{{topic}}" method="POST">
 <p>Title:<br>
 <input type="text" name="title"></p>
 
-<p>Url (optional):<br>
-<input type="text" name="url"></p>
+<p>Link (optional):<br>
+<input type="text" name="link"></p>
 
 <p>Content (optional):<br>
 <textarea name="content" rows="2" cols="40"></textarea>

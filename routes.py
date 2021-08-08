@@ -120,13 +120,13 @@ def create_thread(url):
 	if form["csrf_token"] != users.csrf_token():
 		return abort(403)
 
-	topic = form["topic"]
 	title = form["title"]
+	link = form["link"]
 	content = form["content"]
 
-	post_id = posts.create_thread(topic, title, url, content)
+	post_id = posts.create_thread(url, title, link, content)
 
 	if post_id != 0:
-		return redirect("/topic/" + topic)
+		return redirect("/topic/" + url)
 
 	return error("Failed to create thread.", "/")
