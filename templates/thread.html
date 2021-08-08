@@ -2,6 +2,7 @@
 <hr>
 <p>{{ opener.title }} {% if opener.link %}(<a href="{{ opener.link }}">{{ opener.link }}</a>){% endif %}, posted by {{ opener.username }}
 {% if opener.content %}<p>{{ opener.content }} {% endif %}
+{% if session.username %}
 <hr>
 <p>Reply
 <form action="/reply/{{opener.post_id}}" method="POST">
@@ -10,6 +11,9 @@
 <br>
 <input type="submit" value="Submit">
 </form>
+<hr>
+{% endif %}
+<p>Comments:
 {% for post in replies %}
 <hr>
 <p>{{ post.username }}:
