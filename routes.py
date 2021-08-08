@@ -16,7 +16,7 @@ def register():
 		return render_template("register.html")
 
 	if users.is_user():
-		return 403
+		return abort(403)
 
 	form = request.form
 	user = form["username"]
@@ -43,7 +43,7 @@ def login():
 		return render_template("login.html")
 
 	if users.is_user():
-		return 403
+		return abort(403)
 
 	form = request.form
 	user = form["username"]
