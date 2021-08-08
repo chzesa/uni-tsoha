@@ -12,7 +12,7 @@ def is_valid_password(pwd):
 
 def login(username, pwd):
 	sql = "SELECT id, pwd_hash FROM users WHERE username = :username;"
-	result = db.session.execute(sql, { "username": username })
+	result = db.session.execute(sql, {"username": username})
 	user = result.fetchone()
 
 	if user and check_password_hash(user.pwd_hash, pwd):
@@ -25,10 +25,11 @@ def login(username, pwd):
 
 def register(username, pwd):
 	pwd_hash = generate_password_hash(pwd)
+	sql = """INSERT INTO users (username, pwd_hash, created, is_admin)
+		VALUES (:username, :password, NOW(), FALSE);"""
 
 	try:
-		sql = "INSERT INTO users (username, pwd_hash, created, is_admin) VALUES (:username, :password, NOW(), FALSE);"
-		db.session.execute(sql, { "username": username, "password": pwd_hash })
+		db.session.execute(sql, {"username": username, "password": pwd_hash})
 		db.session.commit()
 	except:
 		return False
