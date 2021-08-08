@@ -52,7 +52,6 @@ def create_topic(url, title, description):
 		VALUES (:url, :title, :description, NOW(), :id)
 		RETURNING id"""
 
-
 	result = db.session.execute(sql, {"url": url, "title": title, "description":description, "id": users.user_id()})
 	db.session.commit()
 	return result.fetchone().id
@@ -87,8 +86,7 @@ def get_thread(thread_id):
 	}
 
 def thread_id_from_opener_id(id):
-	sql = """SELECT threads.id FROM (SELECT * FROM posts WHERE posts.id = :post_id) AS T1
-		LEFT JOIN threads ON threads.id = T1.thread_id"""
+	sql = """SELECT threads.id FROM threads WHERE message_id = :post_id"""
 	result = db.session.execute(sql, {"post_id": id})
 	return result.fetchone()[0]
 
