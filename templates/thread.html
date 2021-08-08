@@ -1,0 +1,17 @@
+<a href="/topic/{{ opener.url }}">{{ opener.topic_title }}</a>{% if session.username %} | <a href="/reply/{{ opener.post_id }}">Reply</a>{% endif %}
+<hr>
+<p>{{ opener.title }} {% if opener.link %}(<a href="{{ opener.link }}">{{ opener.link }}</a>){% endif %}, posted by {{ opener.username }}
+{% if opener.content %}<p>{{ opener.content }} {% endif %}
+<hr>
+<p>Reply
+<form action="/reply/{{opener.post_id}}" method="POST">
+<textarea name="content" rows="2" cols="40"></textarea>
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+<br>
+<input type="submit" value="Submit">
+</form>
+{% for post in replies %}
+<hr>
+<p>{{ post.username }}:
+<p>{{ post.content }}
+{% endfor %}
