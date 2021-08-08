@@ -95,7 +95,7 @@ def topics():
 @app.route("/topic/<string:url>")
 def topic(url):
 	threads = posts.get_threads(url)
-	return render_template("topic.html", threads = threads )
+	return render_template("topic.html", threads = threads, topic=url )
 
 @app.route("/create_thread", methods=["GET", "POST"])
 def create_thread():
