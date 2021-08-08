@@ -1,0 +1,5 @@
+<p><a href="/topics">Back</a>
+
+{% for thread in threads %}
+<p> {{ thread.title }} ({{ thread.url }})
+{% endfor %}

@@ -1,0 +1,14 @@
+{% if session.username %}
+<p>You are currently logged in as {{ session.username }}.
+<p><a href="/">Front page</a>
+<p><a href="/logout">Logout</a>
+<p><a href="/create_topic">Create new topic</a>
+<p><a href="/create_thread">Create new thread</a>
+<p><a href="/topics">View topics</a>
+
+{% else %}
+<p><a href="/register">Register</a>
+<p><a href="/login">Login</a>
+<p><a href="/topics">View topics</a>
+{% endif %}
+
