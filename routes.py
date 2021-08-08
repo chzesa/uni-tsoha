@@ -97,13 +97,23 @@ def topic(url):
 	threads = posts.get_threads(url)
 	return render_template("topic.html", threads = threads, topic=url )
 
-@app.route("/create_thread", methods=["GET", "POST"])
-def create_thread():
+@app.route("/thread/<int:id>", methods=["GET"])
+def thread(id):
+	opener = posts.get_post(id)
+	replies = posts.get_replies(opener["post_id"])
+	return render_template("thread.html", opener=opener, replies=replies)
+
+@app.route("/reply/<int:id>", methods=["GET", "POST"])
+def reply(id):
+	return redirect("/")
+
+@app.route("/create_thread/<string:url>", methods=["GET", "POST"])
+def create_thread(url):
 	if not users.is_user():
 		return redirect("/login")
 
 	if request.method == "GET":
-		return render_template("create_thread.html")
+		return render_template("create_thread.html", topic=url)
 
 	if form["csrf_token"] != users.csrf_token():
 		return abort(403)
@@ -111,7 +121,6 @@ def create_thread():
 	form = request.form
 	topic = form["topic"]
 	title = form["title"]
-	url = form["url"]
 	content = form["content"]
 
 	post_id = posts.create_thread(topic, title, url, content)

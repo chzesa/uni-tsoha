@@ -1,9 +1,6 @@
-<a href="/">Back</a>
-
+<a href="/topic/{{topic}}">Back</a>
+<p>Create new thread
 <form action="/create_thread" method="POST">
-<p>Topic:
-<input type="text" name="topic"></p>
-
 <p>Title:<br>
 <input type="text" name="title"></p>
 
@@ -14,6 +11,7 @@
 <textarea name="content" rows="2" cols="40"></textarea>
 
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+<br>
 <input type="submit" value="Submit">
 
 </form>
