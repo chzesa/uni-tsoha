@@ -59,7 +59,7 @@ def create_topic(url, title, description):
 		return False
 
 def get_threads(topic):
-	sql = """SELECT * FROM threads
+	sql = """SELECT threads.id, threads.title, threads.link FROM threads
 		RIGHT JOIN (SELECT id FROM topics WHERE topics.url=:topic) AS T1 ON threads.topic_id = T1.id
 		LEFT JOIN posts ON threads.message_id = posts.id
 		ORDER BY posts.created DESC"""
