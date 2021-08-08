@@ -1,6 +1,6 @@
-<p><a href="/topics">Back</a>
-
+<a href="/topics">Back</a>{% if session.username %} | <a href="/create_thread/{{ topic }}">Create Thread</a>{% endif %}
 {% for thread in threads %}
 <hr>
-<p> {{ thread.title }} ({{ thread.url }})
+<p> {{ thread.title }} {% if thread.url %}({{ thread.url }}){% endif %}
+<p> <a href="/thread/{{ thread.id }}">comments</a>
 {% endfor %}

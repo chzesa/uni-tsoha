@@ -1,12 +1,5 @@
-{% if not session.username %}
-
-<p>You must be logged in.</p>
-<a href="/">Front page</a>
-<a href="/login">Login</a>
-
-{% else %}
 <a href="/">Back</a>
-
+<p>Create new topic
 <form action="/create_topic" method="POST">
 
 <p>Url:<br>
@@ -23,5 +16,3 @@
 <input type="submit" value="Create">
 
 </form>
-
-{% endif %}

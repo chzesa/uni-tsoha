@@ -1,5 +1,4 @@
-<a href="/">Back</a>
-
+<a href="/">Back</a>{% if session.username %} | <a href="/create_topic">Create new topic</a>{% endif %}
 {% for topic in topics %}
 <hr>
 <p>{{ topic.title }} (<a href="/topic/{{ topic.url }}">{{ topic.url }}</a>)
