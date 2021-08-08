@@ -83,7 +83,7 @@ def create_topic():
 
 	topic_id = posts.create_topic(url, title, description)
 	if topic_id != 0:
-		return redirect("/topic/" + str(topic_id))
+		return redirect("/topic/" + url)
 
 	return error("Failed to create topic.", "/")
 
