@@ -127,7 +127,7 @@ def reply(id):
 	if not posts.is_valid_post_content(content):
 		return error("Replies must be under 1024 characters long.", "/")
 
-	thread_id = posts.thread_id_from_post_id(id) # Fix this since can reply to non-openers
+	thread_id = posts.thread_id_from_post_id(id)
 	reply_id = posts.reply(id, content)
 
 	if not reply_id:
