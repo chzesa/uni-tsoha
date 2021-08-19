@@ -30,16 +30,19 @@ def create_thread(topic_url, title, url, content):
 			INSERT INTO content(content, edited, edited_by, post_id)
 			VALUES (:content, NOW(), :user_id, (SELECT id FROM ins1))
 			RETURNING post_id
+		), ins3 AS (
+			INSERT INTO threads(topic_id, title, link, message_id)
+			VALUES ((SELECT id FROM topics WHERE url = :topic_url), :title, :url, (SELECT id FROM ins1))
+			RETURNING id
 		)
-		INSERT INTO threads(topic_id, title, link, message_id)
-		VALUES ((SELECT id FROM topics WHERE url = :topic_url), :title, :url, (SELECT id FROM ins1))
-		RETURNING id"""
+		INSERT INTO thread_post(post_id, thread_id) VALUES ((SELECT id FROM ins1), (select id from ins3))
+		RETURNING thread_id"""
 
 	try:
 		result = db.session.execute(sql, {"user_id": users.user_id(), "content": content, "topic_url": topic_url, "title": title, "url": url })
 		db.session.commit()
 
-		return result.fetchone().id
+		return result.fetchone().thread_id
 	except:
 		return 0
 
@@ -85,15 +88,15 @@ def get_thread(thread_id):
 		"topic_title": row[6]
 	}
 
-def thread_id_from_opener_id(id):
-	sql = """SELECT threads.id FROM threads WHERE message_id = :post_id"""
-	result = db.session.execute(sql, {"post_id": id})
+def thread_id_from_post_id(id):
+	sql = """SELECT thread_id FROM thread_post WHERE post_id=:id"""
+	result = db.session.execute(sql, {"id": id})
 	return result.fetchone()[0]
 
 def get_replies(post_id):
-	sql = """SELECT content, username FROM
-		(SELECT content, user_id FROM
-			(SELECT  id, user_id FROM posts WHERE posts.parent_id = :post_id) AS T1
+	sql = """SELECT content, username, T2.id FROM
+		(SELECT content, user_id, T1.id FROM
+			(SELECT id, user_id FROM posts WHERE posts.parent_id = :post_id) AS T1
 			LEFT JOIN content ON T1.id = content.post_id
 		) AS T2
 		LEFT JOIN users ON users.id = T2.user_id"""
@@ -101,19 +104,35 @@ def get_replies(post_id):
 	rows = result.fetchall()
 	return rows
 
+def get_post(post_id):
+	sql = """SELECT posts.id, username, content, edited FROM posts
+		LEFT JOIN users ON users.id=posts.user_id
+		LEFT JOIN content ON content.post_id = posts.id
+		WHERE posts.id=:id"""
+
+	result = db.session.execute(sql, {"id": post_id})
+	return result.fetchone()
+
 def reply(post_id, content):
 	sql = """WITH
 		ins1 AS (
 			INSERT INTO posts(user_id, created, parent_id)
 			VALUES (:user_id, NOW(), :post_id)
 			RETURNING id
+		), ins2 AS (
+			INSERT INTO content(content, edited, edited_by, post_id)
+			VALUES (:content, NOW(), :user_id, (SELECT id FROM ins1))
+			RETURNING post_id
 		)
-		INSERT INTO content(content, edited, edited_by, post_id)
-		VALUES (:content, NOW(), :user_id, (SELECT id FROM ins1))
-		RETURNING post_id"""
+		INSERT INTO thread_post(post_id, thread_id)
+		VALUES (
+			(SELECT id FROM ins1),
+			(SELECT thread_id FROM thread_post WHERE post_id=:post_id)
+		) RETURNING post_id"""
 
 	result = db.session.execute(sql, {"user_id": users.user_id(), "post_id": post_id, "content": content})
 	db.session.commit()
+	return result.fetchone()
 
 def is_opener(post_id):
 	sql = """SELECT parent_id FROM posts WHERE id=:post_id AND parent_id=NULL"""

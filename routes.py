@@ -103,13 +103,15 @@ def thread(id):
 	replies = posts.get_replies(opener["post_id"])
 	return render_template("thread.html", opener=opener, replies=replies)
 
-@app.route("/reply/<int:id>", methods=["POST"])
+@app.route("/reply/<int:id>", methods=["GET", "POST"])
 def reply(id):
 	if not users.is_user():
 		return redirect("/login")
 
-	if not posts.is_opener(id):
-		return abort(403)
+	if request.method == "GET":
+		post = posts.get_post(id)
+		print(post)
+		return render_template("reply.html", post=post)
 
 	form = request.form
 	if form["csrf_token"] != users.csrf_token():
@@ -120,8 +122,12 @@ def reply(id):
 	if not posts.is_valid_post_content(content):
 		return error("Replies must be under 1024 characters long.", "/")
 
-	posts.reply(id, content)
-	thread_id = posts.thread_id_from_opener_id(id)
+	thread_id = posts.thread_id_from_post_id(id) # Fix this since can reply to non-openers
+	reply_id = posts.reply(id, content)
+
+	if not reply_id:
+		return error("Failed to create thread", "/thread/" + str(thread_id))
+
 	return redirect("/thread/" + str(thread_id))
 
 @app.route("/create_thread/<string:url>", methods=["GET", "POST"])
@@ -150,9 +156,9 @@ def create_thread(url):
 	if link == "" and not posts.is_valid_post_content(content):
 		return error("Threads must have either a valid url or valid content")
 
-	post_id = posts.create_thread(url, title, link, content)
+	thread_id = posts.create_thread(url, title, link, content)
 
-	if post_id != 0:
-		return redirect("/topic/" + url)
+	if thread_id != 0:
+		return redirect("/thread/" + str(thread_id))
 
 	return error("Failed to create thread.", "/")

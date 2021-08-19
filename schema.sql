@@ -43,3 +43,9 @@ CREATE TABLE content
 	, post_id INTEGER REFERENCES posts(id) NOT NULL
 );
 
+CREATE TABLE thread_post
+(
+	post_id INTEGER REFERENCES posts(id) NOT NULL
+	, thread_id INTEGER REFERENCES threads(id) NOT NULL
+	, PRIMARY KEY (post_id, thread_id)
+);
