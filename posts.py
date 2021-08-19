@@ -157,6 +157,6 @@ def is_opener(post_id):
 	return result.fetchone() == None
 
 def get_topics():
-	sql = "SELECT * FROM topics;"
+	sql = "SELECT url, title, description FROM topics;"
 	result = db.session.execute(sql)
 	return result.fetchall()
