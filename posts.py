@@ -113,6 +113,23 @@ def get_post(post_id):
 	result = db.session.execute(sql, {"id": post_id})
 	return result.fetchone()
 
+def get_posts_by_user(username):
+	user_id = users.id_from_username(username)
+	sql = """SELECT * FROM posts
+		LEFT JOIN content ON content.post_id = posts.id
+		LEFT JOIN thread_post ON thread_post.post_id = posts.id
+		LEFT JOIN (
+			SELECT threads.id, threads.title, url FROM threads
+			LEFT JOIN topics ON threads.topic_id = topics.id
+		)
+		AS T1 ON T1.id = thread_post.thread_id
+		WHERE user_id=:user_id
+		ORDER BY posts.created DESC"""
+
+	result = db.session.execute(sql, {"user_id": user_id})
+	return result.fetchall()
+
+
 def reply(post_id, content):
 	sql = """WITH
 		ins1 AS (

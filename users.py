@@ -37,6 +37,11 @@ def register(username, pwd):
 
 	return True
 
+def id_from_username(username):
+	sql = """SELECT id FROM users WHERE username=:username"""
+	result = db.session.execute(sql, {"username": username})
+	return result.fetchone()[0]
+
 def logout():
 	del session["csrf_token"]
 	del session["username"]

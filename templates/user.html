@@ -1,0 +1,5 @@
+{% for post in user_posts %}
+<hr>
+<p>{{ post.content }}
+<p>posted in thread <a href="">{{ post.title }}</a> in <a href="/topic/{{post.url}}">{{ post.url }}</a>
+{% endfor %}
