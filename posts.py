@@ -17,7 +17,7 @@ def is_valid_thread_link(url):
 	return validators.url(url)
 
 def is_valid_post_content(content):
-	return len(content) > 0 and len(content) < 1024
+	return len(content) < 1024
 
 def create_thread(topic_url, title, url, content):
 	sql = """WITH
