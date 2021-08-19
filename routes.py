@@ -116,7 +116,6 @@ def reply(id):
 
 	if request.method == "GET":
 		post = posts.get_post(id)
-		print(post)
 		return render_template("reply.html", post=post)
 
 	form = request.form
