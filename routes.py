@@ -4,7 +4,7 @@ import users
 import posts
 
 def error(msg, redirect):
-	return render_template("error.html");
+	return render_template("error.html", msg=msg, redirect=redirect);
 
 @app.route("/")
 def index():
