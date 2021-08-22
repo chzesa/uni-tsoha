@@ -182,7 +182,7 @@ def hide(post_id):
 def is_opener(post_id):
 	sql = """SELECT parent_id FROM posts WHERE id=:post_id AND parent_id=NULL"""
 	result = db.session.execute(sql, {"post_id": post_id})
-	return result.fetchone() == None
+	return result.fetchone() != None
 
 def get_topics():
 	sql = "SELECT url, title, description FROM topics;"
