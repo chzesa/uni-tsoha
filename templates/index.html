@@ -1,13 +1,17 @@
-{% if session.username %}
-<p>You are currently logged in as {{ session.username }}.
-<p><a href="/">Front page</a>
-<p><a href="/logout">Logout</a>
-<p><a href="/create_topic">Create new topic</a>
-<p><a href="/topics">View topics</a>
+{% extends "layout.html" %}
+{% block content %}
 
+{% if session.username %}
+You are currently logged in as {{ session.username }}. <a href="/">Front page</a> | <a href="/logout">Logout</a> | <a href="/create_topic">Create new topic</a> | <a href="/topics">View topics</a>
 {% else %}
-<p><a href="/register">Register</a>
-<p><a href="/login">Login</a>
-<p><a href="/topics">View topics</a>
+<a href="/register">Register</a> | <a href="/login">Login</a> | <a href="/topics">View topics</a>
 {% endif %}
 
+{% for thread in threads %}
+<div class="post box">
+	<div class="title">{{ thread.title }} {% if thread.link %}(<a href="{{thread.link}}">{{ thread.link }}</a>){% endif %}</div>
+	<div class="footer">posted in <a href="/topic/{{thread.url}}">{{thread.url}}</a> by {{ thread.username }} <a href="/thread/{{ thread.id }}">comments</a> on {{thread.edited}}</div>
+</div>
+{% endfor %}
+
+{% endblock %}

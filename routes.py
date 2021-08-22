@@ -8,7 +8,7 @@ def error(msg, redirect):
 
 @app.route("/")
 def index():
-	return render_template("index.html")
+	return render_template("index.html", threads=posts.get_frontpage_threads())
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
