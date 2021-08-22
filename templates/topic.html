@@ -1,6 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+
 <a href="/topics">Back</a>{% if session.username %} | <a href="/create_thread/{{ topic }}">Create Thread</a>{% endif %}
+
+
 {% for thread in threads %}
-<hr>
-<p> {{ thread.title }} {% if thread.link %}(<a href="{{thread.link}}">{{ thread.link }}</a>){% endif %}
-<p> <a href="/thread/{{ thread.id }}">comments</a>
+<div class="post box">
+	<div class="title">{{ thread.title }} {% if thread.link %}(<a href="{{thread.link}}">{{ thread.link }}</a>){% endif %}</div>
+	<div class="footer">posted by <a href="/user/{{thread.username}}">{{ thread.username }}</a> on {{thread.created}} <a href="/thread/{{ thread.id }}">comments</a></div>
+</div>
 {% endfor %}
+
+{% endblock %}

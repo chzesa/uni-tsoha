@@ -64,10 +64,11 @@ def create_topic(url, title, description):
 	return result.fetchone().id
 
 def get_threads(topic):
-	sql = """SELECT threads.id, threads.title, threads.link FROM threads
-		RIGHT JOIN (SELECT id FROM topics WHERE topics.url=:topic) AS T1 ON threads.topic_id = T1.id
-		LEFT JOIN posts ON threads.message_id = posts.id
-		WHERE posts.status!=:status
+	sql = """SELECT threads.id, threads.title, threads.link, topics.url, users.username, posts.created FROM threads
+		LEFT JOIN topics ON threads.topic_id=topics.id
+		LEFT JOIN posts ON threads.message_id=posts.id
+		LEFT JOIN users ON posts.user_id=users.id
+		WHERE posts.status!=:status AND topics.url=:topic
 		ORDER BY posts.created DESC"""
 	result = db.session.execute(sql, {"topic": topic, "status": DELETED_VALUE})
 	return result.fetchall()
