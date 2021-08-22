@@ -67,9 +67,9 @@ def get_threads(topic):
 	sql = """SELECT threads.id, threads.title, threads.link FROM threads
 		RIGHT JOIN (SELECT id FROM topics WHERE topics.url=:topic) AS T1 ON threads.topic_id = T1.id
 		LEFT JOIN posts ON threads.message_id = posts.id
-		WHERE posts.status=:status
+		WHERE posts.status!=:status
 		ORDER BY posts.created DESC"""
-	result = db.session.execute(sql, {"topic": topic, "status": NORMAL_VALUE})
+	result = db.session.execute(sql, {"topic": topic, "status": DELETED_VALUE})
 	return result.fetchall()
 
 
