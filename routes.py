@@ -123,8 +123,7 @@ def edit(id):
 		return abort(403)
 
 	if request.method == "GET":
-		post = posts.get_post(id)
-		return render_template("edit.html", post=post)
+		return render_template("edit.html", post=p)
 
 	form = request.form
 	if form["csrf_token"] != users.csrf_token():
