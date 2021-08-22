@@ -10,7 +10,7 @@ Tuotantoversio löytyy [Herokusta](https://ancient-brushlands-17896.herokuapp.co
 
 * ✅ Käyttäjät voivat kirjautua sisään ja ulos, sekä luoda uuden tunnuksen
 * ✅ Käyttäjä voi luoda uuden ketjun olemassaolevalle keskustelualueelle syöttämällä otsikon ja avausviestin sisällön, sekä valinnaisesti linkin
-* Käyttäjä voi muokata tai poistaa oman viestinsä tai ketjunsa
+* ✅ Käyttäjä voi muokata tai poistaa oman viestinsä tai ketjunsa
 * ✅ Käyttäjä voi vastata olemassaolevaan ketjuun
 *  Käyttäjä voi myös vastata ketjun muihin viesteihin
 * Käyttäjät voivat antaa viesteille "tykkäyksiä". Ketjun vastaukset järjestetään ensisijaisesti tykkäysten mukaan
