@@ -9,7 +9,7 @@
 	{% else %}
 		<div class="content">{{ post.content }}</div>
 		<div class="footer">
-			<a href="/thread/{{post.thread_id}}">{{post.title}}</a> in <a href="/topic/{{post.url}}">{{post.url}}</a> on {{post.created}} <a href="/thread/{{ post.thread_id }}">comments</a>{% if post.username == session.username %} <a href="/edit/{{post.id}}">edit</a>{% endif %}{% if post.username == session.username or session.is_admin %} <a href="/delete/{{post.id}}">delete</a>{% endif %}{% if session.is_admin %} <a href="/hide/{{post.id}}">hide</a>{% endif %}
+			<a href="/thread/{{post.thread_id}}">{{post.title}}</a> in <a href="/topic/{{post.url}}">{{post.url}}</a> on {{post.created}} <a href="/thread/{{ post.thread_id }}">comments</a> <a href="/post/{{post.id}}">permalink</a>{% if post.username == session.username %} <a href="/edit/{{post.id}}">edit</a>{% endif %}{% if post.username == session.username or session.is_admin %} <a href="/delete/{{post.id}}">delete</a>{% endif %}{% if session.is_admin %} <a href="/hide/{{post.id}}">hide</a>{% endif %}
 		</div>
 	{% endif %}
 </div>

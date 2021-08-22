@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
-{% block content %}
 
-<a href="/topic/{{ opener.url }}">{{ opener.topic_title }}</a>{% if session.username %} | <a href="/reply/{{ opener.id }}">Reply</a>{% endif %}
+{% block navigation %}
+	<a href="/topic/{{ opener.url }}">{{ opener.url }}</a> > <a href="/thread/{{ opener.thread_id }}">{{ opener.title }}
+{% endblock %}
+{% block content %}
 <div class="post box">
 		<div class="username">posted by {{ opener.username }}</div>
 		{% if opener.content %}<div class="content">{{ opener.content }}</div>{% endif %}

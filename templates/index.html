@@ -1,12 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
 
-{% if session.username %}
-You are currently logged in as {{ session.username }}. <a href="/">Front page</a> | <a href="/logout">Logout</a> | <a href="/create_topic">Create new topic</a> | <a href="/topics">View topics</a>
-{% else %}
-<a href="/register">Register</a> | <a href="/login">Login</a> | <a href="/topics">View topics</a>
-{% endif %}
-
 {% for thread in threads %}
 <div class="post box">
 	<div class="title">{{ thread.title }} {% if thread.link %}(<a href="{{thread.link}}">{{ thread.link }}</a>){% endif %}</div>

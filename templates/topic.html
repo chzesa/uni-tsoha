@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
+
+{% block navigation %}
+	{% if session.username %}<a href="/create_thread/{{ topic }}">Create Thread</a>{% endif %}
+{% endblock %}
+
 {% block content %}
-
-<a href="/topics">Back</a>{% if session.username %} | <a href="/create_thread/{{ topic }}">Create Thread</a>{% endif %}
-
-
 {% for thread in threads %}
 <div class="post box">
 	<div class="title">{{ thread.title }} {% if thread.link %}(<a href="{{thread.link}}">{{ thread.link }}</a>){% endif %}</div>

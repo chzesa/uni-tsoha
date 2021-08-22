@@ -4,11 +4,13 @@
 <p>Title:<br>
 <input type="text" name="title"></p>
 
-<p>Link (optional):<br>
+<p>Link *<br>
 <input type="text" name="link"></p>
 
-<p>Content (optional):<br>
+<p>Content *<br>
 <textarea name="content" rows="2" cols="40"></textarea>
+
+<p>* At least one of these fields must be filled.
 
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 <br>

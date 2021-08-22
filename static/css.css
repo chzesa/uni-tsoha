@@ -1,6 +1,6 @@
 body {
 	margin: 0;
-	background-color: lightgrey;
+	background-color: #EEE;
 	font-family: sans-serif;
 	color: black;
 }
@@ -11,7 +11,7 @@ body {
 }
 
 .main>div {
-	margin: 2rem 0;
+	margin: 1.6rem 0;
 }
 
 .box {
@@ -24,12 +24,13 @@ body {
 	
 }
 
-.post>.username {
+.post>.title {
 	margin-bottom: 0.5rem;
+	font-size: 1rem;
 }
 
-.post>.username::after {
-	content: ":";
+.post>.username {
+	margin-bottom: 0.5rem;
 }
 
 .post>.footer {
