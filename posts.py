@@ -135,16 +135,19 @@ def get_post(post_id):
 
 def get_posts_by_user(username):
 	user_id = users.id_from_username(username)
-	sql = """SELECT * FROM posts
-		LEFT JOIN content ON content.post_id = posts.id
-		LEFT JOIN thread_post ON thread_post.post_id = posts.id
-		LEFT JOIN (
-			SELECT threads.id, threads.title, url FROM threads
+	sql = """
+		SELECT * FROM (
+			SELECT DISTINCT ON (content.post_id) posts.id, posts.status, posts.created, users.username, content.content, content.edited, thread_post.thread_id, threads.title, threads.link, threads.message_id, topics.url FROM posts
+			LEFT JOIN users ON users.id = posts.user_id
+			LEFT JOIN content ON content.post_id = posts.id
+			LEFT JOIN thread_post ON posts.id = thread_post.post_id
+			LEFT JOIN threads ON thread_post.thread_id = threads.id
 			LEFT JOIN topics ON threads.topic_id = topics.id
-		)
-		AS T1 ON T1.id = thread_post.thread_id
-		WHERE user_id=:user_id AND posts.status!=:status
-		ORDER BY posts.created DESC"""
+			WHERE users.id=:user_id AND posts.status!=:status
+			ORDER BY content.post_id, content.edited DESC
+		) AS T
+		ORDER BY T.created DESC
+		"""
 
 	result = db.session.execute(sql, {"user_id": user_id, "status": DELETED_VALUE})
 	return result.fetchall()
