@@ -109,6 +109,15 @@ def thread(id):
 	replies = posts.get_replies(opener["post_id"])
 	return render_template("thread.html", opener=opener, replies=replies)
 
+@app.route("/post/<int:id>", methods=["GET"])
+def post(id):
+	p = posts.get_post(id)
+	if not p or p.status == posts.DELETED_VALUE:
+		return error("Post does not exist or it has been deleted.", "/")
+
+	replies = posts.get_replies(id)
+	return render_template("post.html", opener=p, replies=replies)
+
 @app.route("/edit/<int:id>", methods=["GET", "POST"])
 def edit(id):
 	if not users.is_user():
@@ -192,7 +201,7 @@ def reply(id):
 		return error("Post does not exist or it has been deleted.", "/")
 
 	if request.method == "GET":
-		return render_template("reply.html", post=p)
+		return redirect("/post/" + str(id))
 
 	form = request.form
 	if form["csrf_token"] != users.csrf_token():
@@ -203,13 +212,15 @@ def reply(id):
 	if not posts.is_valid_post_content(content):
 		return error("Replies must be under 1024 characters long.", "/")
 
-	thread_id = posts.thread_id_from_post_id(id)
 	reply_id = posts.reply(id, content)
 
 	if not reply_id:
-		return error("Failed to create thread", "/thread/" + str(thread_id))
+		return error("Failed to create thread", "/thread/" + str(p.thread_id))
 
-	return redirect("/thread/" + str(thread_id))
+	if p.thread_id != p.id:
+		return redirect("/post/" + str(p.id))
+
+	return redirect("/thread/" + str(p.thread_id))
 
 @app.route("/create_thread/<string:url>", methods=["GET", "POST"])
 def create_thread(url):
