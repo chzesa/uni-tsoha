@@ -85,7 +85,7 @@ def get_frontpage_threads():
 	return result.fetchall()
 
 def get_thread(thread_id):
-	sql = """SELECT posts.id, posts.status, users.username, content.content, T1.title, T1.link, topics.url, topics.title
+	sql = """SELECT posts.id AS post_id, posts.status, users.username, content.content, T1.title, T1.link, topics.url, topics.title AS topic_title
 		FROM (SELECT * FROM threads WHERE threads.id = :thread_id) AS T1
 		LEFT JOIN topics ON T1.topic_id = topics.id
 		LEFT JOIN posts ON T1.message_id = posts.id
@@ -93,17 +93,7 @@ def get_thread(thread_id):
 		LEFT JOIN users ON posts.user_id = users.id
 		ORDER BY content.edited DESC"""
 	result = db.session.execute(sql, {"thread_id": thread_id})
-	row = result.fetchone()
-	return {
-		"post_id": row.id,
-		"status": row.status,
-		"username": row.username,
-		"content": row.content,
-		"title": row[4],
-		"link": row.link,
-		"url": row.url,
-		"topic_title": row[7]
-	}
+	return result.fetchone()
 
 def thread_id_from_post_id(id):
 	sql = """SELECT thread_id FROM thread_post WHERE post_id=:id"""
