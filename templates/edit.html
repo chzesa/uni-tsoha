@@ -1,0 +1,9 @@
+<h1>Editing</h1>
+<p>{{post.content}}
+<p> posted on {{post.edited}} in <a href="/topic/{{post.url}}">{{ post.url }}</a>: <a href="/thread/{{post.thread_id}}">{{ post.title }}</a>{% if post.link %} (<a href="{{post.link}}">{{post.link}}</a>){% endif %}
+<form action="/edit/{{post.id}}" method="POST">
+<textarea name="content" rows="2" cols="40"></textarea>
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+<br>
+<input type="submit" value="Submit">
+</form>

@@ -105,10 +105,14 @@ def get_replies(post_id):
 	return rows
 
 def get_post(post_id):
-	sql = """SELECT posts.id, username, content, edited FROM posts
-		LEFT JOIN users ON users.id=posts.user_id
+	sql = """SELECT posts.id, users.username, content.content, content.edited, thread_post.thread_id, threads.title, threads.link, topics.url FROM posts
+		LEFT JOIN users ON users.id = posts.user_id
 		LEFT JOIN content ON content.post_id = posts.id
-		WHERE posts.id=:id"""
+		LEFT JOIN thread_post ON posts.id = thread_post.post_id
+		LEFT JOIN threads ON thread_post.thread_id = threads.id
+		LEFT JOIN topics ON threads.topic_id = topics.id
+		WHERE posts.id=:id
+		ORDER BY content.edited DESC"""
 
 	result = db.session.execute(sql, {"id": post_id})
 	return result.fetchone()
@@ -129,6 +133,15 @@ def get_posts_by_user(username):
 	result = db.session.execute(sql, {"user_id": user_id})
 	return result.fetchall()
 
+def update_post_content(post_id, content, editor_id):
+	sql = """INSERT INTO content (content, edited, edited_by, post_id)
+		VALUES (:content, NOW(), :editor_id, :post_id)"""
+	try:
+		result = db.session.execute(sql, {"content": content, "post_id": post_id, "editor_id": editor_id})
+		db.session.commit()
+		return True
+	except:
+		return False
 
 def reply(post_id, content):
 	sql = """WITH

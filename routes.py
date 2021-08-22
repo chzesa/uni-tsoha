@@ -109,6 +109,33 @@ def thread(id):
 	replies = posts.get_replies(opener["post_id"])
 	return render_template("thread.html", opener=opener, replies=replies)
 
+@app.route("/edit/<int:id>", methods=["GET", "POST"])
+def edit(id):
+	if not users.is_user():
+		return redirect("/login")
+
+	p = posts.get_post(id)
+	if not p:
+		return error("No such post exists.", "/")
+
+	if not p.username == users.user_name() and not users.is_admin():
+		# TODO check if user has edit rights in sql statement
+		return abort(403)
+
+	if request.method == "GET":
+		post = posts.get_post(id)
+		return render_template("edit.html", post=post)
+
+	form = request.form
+	if form["csrf_token"] != users.csrf_token():
+		return abort(403)
+
+	content = form["content"]
+	if not posts.update_post_content(id, content, users.user_id()):
+		return abort(403)
+
+	return redirect("/thread/" + str(p.thread_id))
+
 @app.route("/reply/<int:id>", methods=["GET", "POST"])
 def reply(id):
 	if not users.is_user():

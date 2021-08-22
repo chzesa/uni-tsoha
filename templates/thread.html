@@ -18,5 +18,5 @@
 <hr>
 <p>{{ post.username }}:
 <p>{{ post.content }}
-<p><a href="/reply/{{post.id}}">reply</a>
+<p><a href="/reply/{{post.id}}">reply</a>{% if post.username == session.username %} <a href="/edit/{{post.id}}">edit</a>{% endif %}
 {% endfor %}
