@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="post box">
+	<div class="username">{{ post.username }}</div>
+	<div class="content">{{ post.content }}</div>
+	<div class="footer">{{ post.edited }}</div>
+</div>
+<div class="dialog-box box">
+	<div class="title">Hide post</div>
+	<div class="actions">
+		<div>
+			<form action="/hide/{{ post.id }}" method="POST">
+				<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+				<input type="submit" value="Hide">
+			</form>
+		</div>
+		<div><a href="/thread/{{ post.thread_id }}">Cancel</a></div>
+	</div>
+</div>
+{% endblock %}

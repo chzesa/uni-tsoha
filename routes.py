@@ -148,9 +148,11 @@ def delete(id):
 		# TODO check if user has edit rights in sql statement
 		return abort(403)
 
-	# TODO CSRF ?
 	if request.method == "GET":
 		return render_template("delete.html", post=p)
+
+	if request.form["csrf_token"] != users.csrf_token():
+		return abort(403)
 
 	posts.delete(id)
 	if posts.is_opener(id):
@@ -158,7 +160,7 @@ def delete(id):
 
 	return redirect("/thread/" + str(p.thread_id))
 
-@app.route("/hide/<int:id>", methods=["POST"])
+@app.route("/hide/<int:id>", methods=["GET", "POST"])
 def hide(id):
 	if not users.is_user():
 		return redirect("/login")
@@ -171,7 +173,11 @@ def hide(id):
 		# TODO check if user has edit rights in sql statement
 		return abort(403)
 
-	# TODO CSRF ?
+	if request.method == "GET":
+		return render_template("hide.html", post=p)
+
+	if request.form["csrf_token"] != users.csrf_token():
+		return abort(403)
 
 	posts.hide(id)
 	return redirect("/thread/" + str(p.thread_id))
