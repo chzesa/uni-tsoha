@@ -12,9 +12,9 @@ Tuotantoversio löytyy [Herokusta](https://ancient-brushlands-17896.herokuapp.co
 * ✅ Käyttäjä voi luoda uuden ketjun olemassaolevalle keskustelualueelle syöttämällä otsikon ja avausviestin sisällön, sekä valinnaisesti linkin
 * ✅ Käyttäjä voi muokata tai poistaa oman viestinsä tai ketjunsa
 * ✅ Käyttäjä voi vastata olemassaolevaan ketjuun
-*  Käyttäjä voi myös vastata ketjun muihin viesteihin
+* ✅ Käyttäjä voi myös vastata ketjun muihin viesteihin
 * Käyttäjät voivat antaa viesteille "tykkäyksiä". Ketjun vastaukset järjestetään ensisijaisesti tykkäysten mukaan
-* Sovelluksen etusivu näyttää käänteisen kronologisen listan uusimmista ketjuista
+* ✅ Sovelluksen etusivu näyttää käänteisen kronologisen listan uusimmista ketjuista
 * ✅ Keskustelualueiden sivu näyttää käänteisen kronologisen listan uusimmista ketjuista
 * ✅ Käyttäjä voi luoda uuden keskustelualueen syöttämällä nimen joka ei ole vielä käytössä
 * Käyttäjä saa hallinnointioikeudet luomaansa keskustelualeeseen
