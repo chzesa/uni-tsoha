@@ -186,10 +186,10 @@ def create_thread(url):
 		return error("Malformed link url", "/")
 
 	if not posts.is_valid_post_content(content):
-		return error("Posts must have length under 1024 characters.")
+		return error("Posts must have length under 1024 characters.", "/")
 
 	if link == "" and content == "":
-		return error("At least one of link and content must not be empty.")
+		return error("At least one of link and content must not be empty.", "/")
 
 	thread_id = posts.create_thread(url, title, link, content)
 
