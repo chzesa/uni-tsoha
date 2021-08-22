@@ -60,3 +60,10 @@ CREATE TABLE thread_post
 	, thread_id INTEGER REFERENCES threads(id) NOT NULL
 	, PRIMARY KEY (post_id, thread_id)
 );
+
+CREATE TABLE likes
+(
+	post_id INTEGER REFERENCES posts(id)
+	, user_id INTEGER REFERENCES users(id)
+	, PRIMARY KEY (post_id, user_id)
+);
