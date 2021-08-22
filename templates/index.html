@@ -10,7 +10,7 @@ You are currently logged in as {{ session.username }}. <a href="/">Front page</a
 {% for thread in threads %}
 <div class="post box">
 	<div class="title">{{ thread.title }} {% if thread.link %}(<a href="{{thread.link}}">{{ thread.link }}</a>){% endif %}</div>
-	<div class="footer">posted in <a href="/topic/{{thread.url}}">{{thread.url}}</a> by {{ thread.username }} <a href="/thread/{{ thread.id }}">comments</a> on {{thread.edited}}</div>
+	<div class="footer">posted in <a href="/topic/{{thread.url}}">{{thread.url}}</a> by {{ thread.username }} <a href="/thread/{{ thread.id }}">comments</a> on {{thread.created}}</div>
 </div>
 {% endfor %}
 

@@ -73,16 +73,12 @@ def get_threads(topic):
 	return result.fetchall()
 
 def get_frontpage_threads():
-	# SELECT * because the outer statement is just used to reorder and limit the rows
-	sql = """SELECT * FROM (SELECT DISTINCT ON (content.post_id) threads.id, threads.title, threads.link, topics.url, users.username, content.edited, posts.created FROM threads
-			LEFT JOIN topics ON threads.topic_id=topics.id
-			LEFT JOIN posts ON threads.message_id=posts.id
-			LEFT JOIN users ON posts.user_id=users.id
-			LEFT JOIN content ON content.post_id = posts.id
-			WHERE posts.status=:status
-			ORDER BY content.post_id, content.edited DESC
-		) AS T
-		ORDER BY T.created DESC
+	sql = """SELECT threads.id, threads.title, threads.link, topics.url, users.username, posts.created FROM threads
+		LEFT JOIN topics ON threads.topic_id=topics.id
+		LEFT JOIN posts ON threads.message_id=posts.id
+		LEFT JOIN users ON posts.user_id=users.id
+		WHERE posts.status=:status
+		ORDER BY posts.created DESC
 		LIMIT 50"""
 	result = db.session.execute(sql, {"status": NORMAL_VALUE})
 	return result.fetchall()
