@@ -94,12 +94,11 @@ def thread_id_from_post_id(id):
 	return result.fetchone()[0]
 
 def get_replies(post_id):
-	sql = """SELECT content, username, T2.id FROM
-		(SELECT content, user_id, T1.id FROM
-			(SELECT id, user_id FROM posts WHERE posts.parent_id = :post_id) AS T1
-			LEFT JOIN content ON T1.id = content.post_id
-		) AS T2
-		LEFT JOIN users ON users.id = T2.user_id"""
+	sql = """SELECT DISTINCT ON (content.post_id) content, username, posts.id FROM posts
+		LEFT JOIN content ON content.post_id = posts.id
+		LEFT JOIN users ON users.id = posts.user_id
+		WHERE posts.parent_id = :post_id
+		ORDER BY content.post_id, content.edited DESC"""
 	result = db.session.execute(sql, {"post_id": post_id})
 	rows = result.fetchall()
 	return rows
