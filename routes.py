@@ -115,8 +115,8 @@ def edit(id):
 		return redirect("/login")
 
 	p = posts.get_post(id)
-	if not p:
-		return error("No such post exists.", "/")
+	if not p or p.status == posts.DELETED_VALUE:
+		return error("Post does not exist or it has been deleted.", "/")
 
 	if not p.username == users.user_name() and not users.is_admin():
 		# TODO check if user has edit rights in sql statement
@@ -136,14 +136,58 @@ def edit(id):
 
 	return redirect("/thread/" + str(p.thread_id))
 
+@app.route("/delete/<int:id>", methods=["GET", "POST"])
+def delete(id):
+	if not users.is_user():
+		return redirect("/login")
+
+	p = posts.get_post(id)
+	if not p or p.status == posts.DELETED_VALUE:
+		return error("Post does not exist or it has been deleted.", "/")
+
+	if not p.username == users.user_name() and not users.is_admin():
+		# TODO check if user has edit rights in sql statement
+		return abort(403)
+
+	# TODO CSRF ?
+	if request.method == "GET":
+		return render_template("delete.html", post=p)
+
+	posts.delete(id)
+	if posts.is_opener(id):
+		return redirect("/topic/" + p.url)
+
+	return redirect("/thread/" + str(p.thread_id))
+
+@app.route("/hide/<int:id>", methods=["POST"])
+def hide(id):
+	if not users.is_user():
+		return redirect("/login")
+
+	p = posts.get_post(id)
+	if not p or p.status == posts.DELETED_VALUE:
+		return error("Post does not exist or it has been deleted.", "/")
+
+	if not users.is_admin():
+		# TODO check if user has edit rights in sql statement
+		return abort(403)
+
+	# TODO CSRF ?
+
+	posts.hide(id)
+	return redirect("/thread/" + str(p.thread_id))
+
 @app.route("/reply/<int:id>", methods=["GET", "POST"])
 def reply(id):
 	if not users.is_user():
 		return redirect("/login")
 
+	p = posts.get_post(id)
+	if not p or p.status == posts.DELETED_VALUE:
+		return error("Post does not exist or it has been deleted.", "/")
+
 	if request.method == "GET":
-		post = posts.get_post(id)
-		return render_template("reply.html", post=post)
+		return render_template("reply.html", post=p)
 
 	form = request.form
 	if form["csrf_token"] != users.csrf_token():

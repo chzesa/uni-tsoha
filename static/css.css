@@ -1,0 +1,58 @@
+body {
+	margin: 0;
+	background-color: lightgrey;
+	font-family: sans-serif;
+	color: black;
+}
+
+.main {
+	max-width: 50rem;
+	margin: 4rem auto;
+}
+
+.main>div {
+	margin: 2rem 0;
+}
+
+.box {
+	background-color: white;
+	padding: 1.3rem;
+	box-shadow: 0 0.5rem 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+.post {
+	
+}
+
+.post>.username {
+	margin-bottom: 0.5rem;
+}
+
+.post>.username::after {
+	content: ":";
+}
+
+.post>.footer {
+	margin-top:  0.5rem;
+	font-size: 0.9rem;
+	color: darkgrey;
+}
+
+.dialog-box {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+}
+
+.dialog-box>.title {
+	font-size:  1.3rem;
+}
+
+.dialog-box>.actions {
+	display: flex;
+	flex-direction: row;
+}
+
+.dialog-box>.actions>div {
+	margin: 0.5rem;
+}

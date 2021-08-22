@@ -4,6 +4,10 @@ import users
 import re
 import validators
 
+NORMAL_VALUE = 1
+HIDDEN_VALUE = 2
+DELETED_VALUE = 3
+
 def is_valid_topic_title(title):
 	return title != "" and len(title) < 128
 
@@ -22,8 +26,8 @@ def is_valid_post_content(content):
 def create_thread(topic_url, title, url, content):
 	sql = """WITH
 		ins1 AS (
-			INSERT INTO posts(user_id, created)
-			VALUES (:user_id, NOW())
+			INSERT INTO posts(user_id, created, status)
+			VALUES (:user_id, NOW(), :status)
 			RETURNING id
 		)
 		, ins2 AS (
@@ -39,7 +43,7 @@ def create_thread(topic_url, title, url, content):
 		RETURNING thread_id"""
 
 	try:
-		result = db.session.execute(sql, {"user_id": users.user_id(), "content": content, "topic_url": topic_url, "title": title, "url": url })
+		result = db.session.execute(sql, {"user_id": users.user_id(), "content": content, "topic_url": topic_url, "title": title, "url": url, "status": NORMAL_VALUE })
 		db.session.commit()
 
 		return result.fetchone().thread_id
@@ -63,13 +67,14 @@ def get_threads(topic):
 	sql = """SELECT threads.id, threads.title, threads.link FROM threads
 		RIGHT JOIN (SELECT id FROM topics WHERE topics.url=:topic) AS T1 ON threads.topic_id = T1.id
 		LEFT JOIN posts ON threads.message_id = posts.id
+		WHERE posts.status=:status
 		ORDER BY posts.created DESC"""
-	result = db.session.execute(sql, {"topic": topic})
+	result = db.session.execute(sql, {"topic": topic, "status": NORMAL_VALUE})
 	return result.fetchall()
 
 
 def get_thread(thread_id):
-	sql = """SELECT posts.id, users.username, content.content, T1.title, T1.link, topics.url, topics.title
+	sql = """SELECT posts.id, posts.status, users.username, content.content, T1.title, T1.link, topics.url, topics.title
 		FROM (SELECT * FROM threads WHERE threads.id = :thread_id) AS T1
 		LEFT JOIN topics ON T1.topic_id = topics.id
 		LEFT JOIN posts ON T1.message_id = posts.id
@@ -80,12 +85,13 @@ def get_thread(thread_id):
 	row = result.fetchone()
 	return {
 		"post_id": row.id,
+		"status": row.status,
 		"username": row.username,
 		"content": row.content,
-		"title": row[3],
+		"title": row[4],
 		"link": row.link,
 		"url": row.url,
-		"topic_title": row[6]
+		"topic_title": row[7]
 	}
 
 def thread_id_from_post_id(id):
@@ -94,7 +100,7 @@ def thread_id_from_post_id(id):
 	return result.fetchone()[0]
 
 def get_replies(post_id):
-	sql = """SELECT DISTINCT ON (content.post_id) content, username, posts.id FROM posts
+	sql = """SELECT DISTINCT ON (content.post_id) content, username, posts.id, posts.status FROM posts
 		LEFT JOIN content ON content.post_id = posts.id
 		LEFT JOIN users ON users.id = posts.user_id
 		WHERE posts.parent_id = :post_id
@@ -104,7 +110,7 @@ def get_replies(post_id):
 	return rows
 
 def get_post(post_id):
-	sql = """SELECT posts.id, users.username, content.content, content.edited, thread_post.thread_id, threads.title, threads.link, topics.url FROM posts
+	sql = """SELECT posts.id, posts.status, users.username, content.content, content.edited, thread_post.thread_id, threads.title, threads.link, topics.url FROM posts
 		LEFT JOIN users ON users.id = posts.user_id
 		LEFT JOIN content ON content.post_id = posts.id
 		LEFT JOIN thread_post ON posts.id = thread_post.post_id
@@ -126,10 +132,10 @@ def get_posts_by_user(username):
 			LEFT JOIN topics ON threads.topic_id = topics.id
 		)
 		AS T1 ON T1.id = thread_post.thread_id
-		WHERE user_id=:user_id
+		WHERE user_id=:user_id AND posts.status!=:status
 		ORDER BY posts.created DESC"""
 
-	result = db.session.execute(sql, {"user_id": user_id})
+	result = db.session.execute(sql, {"user_id": user_id, "status": DELETED_VALUE})
 	return result.fetchall()
 
 def update_post_content(post_id, content, editor_id):
@@ -145,8 +151,8 @@ def update_post_content(post_id, content, editor_id):
 def reply(post_id, content):
 	sql = """WITH
 		ins1 AS (
-			INSERT INTO posts(user_id, created, parent_id)
-			VALUES (:user_id, NOW(), :post_id)
+			INSERT INTO posts(user_id, created, parent_id, status)
+			VALUES (:user_id, NOW(), :post_id, :status)
 			RETURNING id
 		), ins2 AS (
 			INSERT INTO content(content, edited, edited_by, post_id)
@@ -159,9 +165,19 @@ def reply(post_id, content):
 			(SELECT thread_id FROM thread_post WHERE post_id=:post_id)
 		) RETURNING post_id"""
 
-	result = db.session.execute(sql, {"user_id": users.user_id(), "post_id": post_id, "content": content})
+	result = db.session.execute(sql, {"user_id": users.user_id(), "post_id": post_id, "content": content, "status": NORMAL_VALUE})
 	db.session.commit()
 	return result.fetchone()
+
+def delete(post_id):
+	sql = """UPDATE posts SET status=:status WHERE posts.id=:post_id"""
+	result = db.session.execute(sql, {"post_id": post_id, "status": DELETED_VALUE})
+	db.session.commit()
+
+def hide(post_id):
+	sql = """UPDATE posts SET status=:status WHERE posts.id=:post_id"""
+	result = db.session.execute(sql, {"post_id": post_id, "status": HIDDEN_VALUE})
+	db.session.commit()
 
 def is_opener(post_id):
 	sql = """SELECT parent_id FROM posts WHERE id=:post_id AND parent_id=NULL"""
