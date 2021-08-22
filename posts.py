@@ -43,7 +43,14 @@ def create_thread(topic_url, title, url, content):
 		RETURNING thread_id"""
 
 	try:
-		result = db.session.execute(sql, {"user_id": users.user_id(), "content": content, "topic_url": topic_url, "title": title, "url": url, "status": NORMAL_VALUE })
+		result = db.session.execute(sql, {
+			"user_id": users.user_id(),
+			"content": content,
+			"topic_url": topic_url,
+			"title": title,
+			"url": url,
+			"status": NORMAL_VALUE
+		})
 		db.session.commit()
 
 		return result.fetchone().thread_id
@@ -85,7 +92,8 @@ def get_frontpage_threads():
 	return result.fetchall()
 
 def get_thread(thread_id):
-	sql = """SELECT posts.id AS post_id, posts.status, users.username, content.content, T1.title, T1.link, topics.url, topics.title AS topic_title
+	sql = """SELECT posts.id AS post_id, posts.status, users.username, content.content,
+			T1.title, T1.link, topics.url, topics.title AS topic_title
 		FROM (SELECT * FROM threads WHERE threads.id = :thread_id) AS T1
 		LEFT JOIN topics ON T1.topic_id = topics.id
 		LEFT JOIN posts ON T1.message_id = posts.id
@@ -111,7 +119,8 @@ def get_replies(post_id):
 	return rows
 
 def get_post(post_id):
-	sql = """SELECT posts.id, posts.status, users.username, content.content, content.edited, thread_post.thread_id, threads.title, threads.link, topics.url FROM posts
+	sql = """SELECT posts.id, posts.status, users.username, content.content, content.edited,
+			thread_post.thread_id, threads.title, threads.link, topics.url FROM posts
 		LEFT JOIN users ON users.id = posts.user_id
 		LEFT JOIN content ON content.post_id = posts.id
 		LEFT JOIN thread_post ON posts.id = thread_post.post_id
@@ -127,7 +136,9 @@ def get_posts_by_user(username):
 	user_id = users.id_from_username(username)
 	sql = """
 		SELECT * FROM (
-			SELECT DISTINCT ON (content.post_id) posts.id, posts.status, posts.created, users.username, content.content, content.edited, thread_post.thread_id, threads.title, threads.link, threads.message_id, topics.url FROM posts
+			SELECT DISTINCT ON (content.post_id) posts.id, posts.status, posts.created,
+				users.username, content.content, content.edited, thread_post.thread_id,
+				threads.title, threads.link, threads.message_id, topics.url FROM posts
 			LEFT JOIN users ON users.id = posts.user_id
 			LEFT JOIN content ON content.post_id = posts.id
 			LEFT JOIN thread_post ON posts.id = thread_post.post_id
