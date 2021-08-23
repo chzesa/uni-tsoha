@@ -139,6 +139,10 @@ def edit(id):
 		return abort(403)
 
 	content = form["content"]
+
+	if not posts.is_valid_post_content(content):
+		return error("Replies must be under 1024 characters long.", "/")
+
 	if not posts.update_post_content(id, content, users.user_id()):
 		return abort(403)
 
