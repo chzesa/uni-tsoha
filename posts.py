@@ -71,21 +71,25 @@ def create_topic(url, title, description):
 	return result.fetchone().id
 
 def get_threads(topic):
-	sql = """SELECT threads.id, threads.title, threads.link, topics.url, users.username, posts.created FROM threads
+	sql = """SELECT threads.id, threads.title, threads.link, topics.url, users.username, posts.created, COUNT(thread_post.post_id) - 1 AS comment_count FROM threads
 		LEFT JOIN topics ON threads.topic_id=topics.id
 		LEFT JOIN posts ON threads.message_id=posts.id
 		LEFT JOIN users ON posts.user_id=users.id
+		LEFT JOIN thread_post ON thread_post.thread_id=threads.id
 		WHERE posts.status!=:status AND topics.url=:topic
+		GROUP BY threads.id, topics.url, users.username, posts.created
 		ORDER BY posts.created DESC"""
 	result = db.session.execute(sql, {"topic": topic, "status": DELETED_VALUE})
 	return result.fetchall()
 
 def get_frontpage_threads():
-	sql = """SELECT threads.id, threads.title, threads.link, topics.url, users.username, posts.created FROM threads
+	sql = """SELECT threads.id, threads.title, threads.link, topics.url, users.username, posts.created, COUNT(thread_post.post_id) - 1 AS comment_count FROM threads
 		LEFT JOIN topics ON threads.topic_id=topics.id
 		LEFT JOIN posts ON threads.message_id=posts.id
 		LEFT JOIN users ON posts.user_id=users.id
+		LEFT JOIN thread_post ON thread_post.thread_id=threads.id
 		WHERE posts.status=:status
+		GROUP BY threads.id, topics.url, users.username, posts.created
 		ORDER BY posts.created DESC
 		LIMIT 50"""
 	result = db.session.execute(sql, {"status": NORMAL_VALUE})

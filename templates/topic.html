@@ -8,7 +8,7 @@
 {% for thread in threads %}
 <div class="post box">
 	<div class="title">{{ thread.title }} {% if thread.link %}(<a href="{{thread.link}}">{{ thread.link }}</a>){% endif %}</div>
-	<div class="footer">posted by <a href="/user/{{thread.username}}">{{ thread.username }}</a> on {{thread.created}} <a href="/thread/{{ thread.id }}">comments</a></div>
+	<div class="footer">posted by <a href="/user/{{thread.username}}">{{ thread.username }}</a> on {{thread.created}} <a href="/thread/{{ thread.id }}">{{thread.comment_count}} comments</a></div>
 </div>
 {% endfor %}
 
