@@ -106,8 +106,9 @@ def topic(url):
 @app.route("/thread/<int:id>", methods=["GET"])
 def thread(id):
 	opener = posts.get_thread(id)
-	if not opener:
-		return abort(404)
+	if not opener or opener.status == posts.DELETED_VALUE:
+		return error("Post does not exist or it has been deleted.", "/")
+
 	replies = posts.get_replies(opener.id)
 	return render_template("post.html", root=opener, replies=replies)
 
