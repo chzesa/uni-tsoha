@@ -62,7 +62,7 @@ def logout():
 @app.route("/user/<string:username>", methods=["GET"])
 def view_profile(username):
 	user_posts = posts.get_posts_by_user(username)
-	return render_template("user.html", user_posts=user_posts)
+	return render_template("user.html", user_posts=user_posts, user=username)
 	return redirect("/")
 
 @app.route("/create_topic", methods=["GET", "POST"])
