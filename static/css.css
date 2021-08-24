@@ -5,6 +5,10 @@ body {
 	color: black;
 }
 
+a:link, a:visited {
+	text-decoration: none;
+}
+
 .main {
 	max-width: 50rem;
 	margin: 4rem auto;
