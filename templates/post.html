@@ -57,7 +57,9 @@
 		<div class="footer">
 			<span>posted by <a href="/user/{{ post.username }}">{{ post.username }}</a></span>
 			<span>on {{ post.created }}</span>
-			<a href="/reply/{{post.id}}">reply</a>
+			{% if session.username %}
+				<a href="/reply/{{post.id}}">reply</a>
+			{% endif %}
 			{% if post.username == session.username %}
 				<a href="/edit/{{post.id}}">edit</a>
 			{% endif %}
