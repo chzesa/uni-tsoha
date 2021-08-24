@@ -223,7 +223,7 @@ def reply(id):
 	if not reply_id:
 		return error("Failed to create thread", "/thread/" + str(p.thread_id))
 
-	if p.thread_id != p.id:
+	if not posts.is_opener(id):
 		return redirect("/post/" + str(p.id))
 
 	return redirect("/thread/" + str(p.thread_id))
