@@ -96,7 +96,7 @@ def get_frontpage_threads():
 	return result.fetchall()
 
 def get_thread(thread_id):
-	sql = """SELECT posts.id AS post_id, posts.status, users.username, content.content,
+	sql = """SELECT posts.id AS post_id, posts.status, users.username, posts.created, content.content,
 			T1.title, T1.link, topics.url, topics.title AS topic_title
 		FROM (SELECT * FROM threads WHERE threads.id = :thread_id) AS T1
 		LEFT JOIN topics ON T1.topic_id = topics.id
@@ -113,7 +113,7 @@ def thread_id_from_post_id(id):
 	return result.fetchone()[0]
 
 def get_replies(post_id):
-	sql = """SELECT DISTINCT ON (content.post_id) content, username, posts.id, posts.status FROM posts
+	sql = """SELECT DISTINCT ON (content.post_id) content, username, posts.id, posts.status, posts.created FROM posts
 		LEFT JOIN content ON content.post_id = posts.id
 		LEFT JOIN users ON users.id = posts.user_id
 		WHERE posts.parent_id = :post_id
@@ -123,8 +123,8 @@ def get_replies(post_id):
 	return rows
 
 def get_post(post_id):
-	sql = """SELECT posts.id, posts.status, users.username, content.content, content.edited,
-			thread_post.thread_id, threads.title, threads.link, topics.url FROM posts
+	sql = """SELECT posts.id, posts.status, users.username, posts.created, content.content, content.edited,
+			thread_post.thread_id, threads.title, threads.link, threads.message_id AS opener_id, topics.url, topics.title AS topic_title FROM posts
 		LEFT JOIN users ON users.id = posts.user_id
 		LEFT JOIN content ON content.post_id = posts.id
 		LEFT JOIN thread_post ON posts.id = thread_post.post_id

@@ -1,24 +1,45 @@
 {% extends "layout.html" %}
 
 {% block navigation %}
-	<a href="/topic/{{ opener.url }}">{{ opener.url }}</a>
-	<a href="/thread/{{ opener.thread_id }}">{{ opener.title }}</a>
-	<span>post #{{ opener.id }}</span>
+	<a href="/topic/{{ root.url }}">{{ root.url }}</a>
+	{% if root.opener_id == root.id %}
+		<span>{{ root.title }}</span>
+	{% else %}
+		<a href="/thread/{{ root.thread_id }}">{{ root.title }}</a>
+		<span>post #{{ root.id }}</span>
+	{% endif %}
 {% endblock %}
 {% block content %}
 <div class="post box">
-		<div class="username">posted by {{ opener.username }}</div>
-		{% if opener.content %}<div class="content">{{ opener.content }}</div>{% endif %}
+		{% if root.opener_id == root.id %}
+			<div class="title">
+				{{ root.title }}
+				{% if root.link %}
+					(<a href="{{ root.link }}">{{ root.link }}</a>)
+				{% endif %}
+			</div>
+		{% endif %}
+		{% if root.content %}
+			<div class="content">{{ root.content }}</div>
+		{% endif %}
 		<div class="footer">
-			{% if opener.username == session.username %} <a href="/edit/{{opener.id}}">edit</a>{% endif %}
-			{% if opener.username == session.username or session.is_admin %} <a href="/delete/{{opener.id}}">delete</a>{% endif %}
-			{% if session.is_admin %} <a href="/hide/{{opener.id}}">hide</a>{% endif %}
+			<span>posted by <a href="/user/{{ root.username }}">{{ root.username }}</a></span>
+			<span>on {{ root.created }}</span>
+			{% if root.username == session.username %}
+				<a href="/edit/{{root.id}}">edit</a>
+			{% endif %}
+			{% if root.username == session.username or session.is_admin %}
+				<a href="/delete/{{root.id}}">delete</a>
+			{% endif %}
+			{% if session.is_admin %}
+				<a href="/hide/{{root.id}}">hide</a>
+			{% endif %}
 		</div>
 </div>
 {% if session.username %}
 	</p>
 	<p>Reply
-	<form action="/reply/{{opener.id}}" method="POST">
+	<form action="/reply/{{root.id}}" method="POST">
 		<textarea name="content" rows="2" cols="40"></textarea>
 		<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 		<br>

@@ -109,7 +109,7 @@ def thread(id):
 	if not opener:
 		return abort(404)
 	replies = posts.get_replies(opener["post_id"])
-	return render_template("thread.html", opener=opener, replies=replies)
+	return render_template("post.html", root=opener, replies=replies)
 
 @app.route("/post/<int:id>", methods=["GET"])
 def post(id):
@@ -118,7 +118,7 @@ def post(id):
 		return error("Post does not exist or it has been deleted.", "/")
 
 	replies = posts.get_replies(id)
-	return render_template("post.html", opener=p, replies=replies)
+	return render_template("post.html", root=p, replies=replies)
 
 @app.route("/edit/<int:id>", methods=["GET", "POST"])
 def edit(id):
