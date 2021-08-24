@@ -199,7 +199,7 @@ def hide(post_id):
 	db.session.commit()
 
 def is_opener(post_id):
-	sql = """SELECT parent_id FROM posts WHERE id=:post_id AND parent_id=NULL"""
+	sql = """SELECT * FROM posts WHERE id=:post_id AND parent_id IS NULL"""
 	result = db.session.execute(sql, {"post_id": post_id})
 	return result.fetchone() != None
 
