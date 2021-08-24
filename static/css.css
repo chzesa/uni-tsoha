@@ -61,3 +61,16 @@ a:link, a:visited {
 .dialog-box>.actions>div {
 	margin: 0.5rem;
 }
+
+.top-bar {
+	position: sticky;
+	top: 0;
+	display: flex;
+	flex-direction: row;
+	padding: 0.4rem;
+}
+
+.spacer {
+	visibility: hidden;
+	flex-grow: 1;
+}
