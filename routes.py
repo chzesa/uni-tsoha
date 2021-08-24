@@ -106,6 +106,8 @@ def topic(url):
 @app.route("/thread/<int:id>", methods=["GET"])
 def thread(id):
 	opener = posts.get_thread(id)
+	if not opener:
+		return abort(404)
 	replies = posts.get_replies(opener["post_id"])
 	return render_template("thread.html", opener=opener, replies=replies)
 
