@@ -108,7 +108,7 @@ def thread(id):
 	opener = posts.get_thread(id)
 	if not opener:
 		return abort(404)
-	replies = posts.get_replies(opener["post_id"])
+	replies = posts.get_replies(opener.id)
 	return render_template("post.html", root=opener, replies=replies)
 
 @app.route("/post/<int:id>", methods=["GET"])

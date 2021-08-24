@@ -96,8 +96,8 @@ def get_frontpage_threads():
 	return result.fetchall()
 
 def get_thread(thread_id):
-	sql = """SELECT posts.id AS post_id, posts.status, users.username, posts.created, content.content,
-			T1.title, T1.link, topics.url, topics.title AS topic_title
+	sql = """SELECT posts.id, posts.status, users.username, posts.created, content.content,
+			T1.title, T1.link, T1.message_id AS opener_id, topics.url, topics.title AS topic_title
 		FROM (SELECT * FROM threads WHERE threads.id = :thread_id) AS T1
 		LEFT JOIN topics ON T1.topic_id = topics.id
 		LEFT JOIN posts ON T1.message_id = posts.id
