@@ -53,14 +53,20 @@
 	{% if post.status == 3 %}
 		<div class="content">Deleted</div>
 	{% else %}
-		<!-- If post status == 2 set hidden -->
-		<div class="username">{{ post.username }}</div>
 		<div class="content">{{ post.content }}</div>
 		<div class="footer">
+			<span>posted by <a href="/user/{{ post.username }}">{{ post.username }}</a></span>
+			<span>on {{ post.created }}</span>
 			<a href="/reply/{{post.id}}">reply</a>
-			{% if post.username == session.username %} <a href="/edit/{{post.id}}">edit</a>{% endif %}
-			{% if post.username == session.username or session.is_admin %} <a href="/delete/{{post.id}}">delete</a>{% endif %}
-			{% if session.is_admin %} <a href="/hide/{{post.id}}">hide</a>{% endif %}
+			{% if post.username == session.username %}
+				<a href="/edit/{{post.id}}">edit</a>
+			{% endif %}
+			{% if post.username == session.username or session.is_admin %}
+				<a href="/delete/{{post.id}}">delete</a>
+			{% endif %}
+			{% if session.is_admin %}
+				<a href="/hide/{{post.id}}">hide</a>
+			{% endif %}
 		</div>
 	{% endif %}
 </div>
