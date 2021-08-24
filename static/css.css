@@ -74,3 +74,8 @@ a:link, a:visited {
 	visibility: hidden;
 	flex-grow: 1;
 }
+
+.navigation>a:not(:first-child):before,
+.navigation>span:not(:first-child):before {
+	content: " > ";
+}

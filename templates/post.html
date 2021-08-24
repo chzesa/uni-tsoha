@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 
 {% block navigation %}
-	<a href="/topic/{{ opener.url }}">{{ opener.url }}</a> > <a href="/thread/{{ opener.thread_id }}">{{ opener.title }}</a> > post #{{ opener.id }}
+	<a href="/topic/{{ opener.url }}">{{ opener.url }}</a>
+	<a href="/thread/{{ opener.thread_id }}">{{ opener.title }}</a>
+	<span>post #{{ opener.id }}</span>
 {% endblock %}
 {% block content %}
 <div class="post box">
