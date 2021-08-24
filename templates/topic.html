@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block navigation %}
+	<a href="/topics">Topics</a>
 	<span>{{topic}}</span>
 	{% if session.username %}
 		<a href="/create_thread/{{ topic }}">Create Thread</a>

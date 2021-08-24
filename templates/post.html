@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block navigation %}
+	<a href="/topics">Topics</a>
 	<a href="/topic/{{ root.url }}">{{ root.url }}</a>
 	{% if root.opener_id == root.id %}
 		<span>{{ root.title }}</span>
