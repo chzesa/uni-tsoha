@@ -71,7 +71,8 @@ def create_topic(url, title, description):
 	return result.fetchone().id
 
 def get_threads(topic):
-	sql = """SELECT threads.id, threads.title, threads.link, topics.url, users.username, posts.created, COUNT(thread_post.post_id) - 1 AS comment_count FROM threads
+	sql = """SELECT threads.id, threads.title, threads.link, topics.url, users.username,
+			posts.created, COUNT(thread_post.post_id) - 1 AS comment_count FROM threads
 		LEFT JOIN topics ON threads.topic_id=topics.id
 		LEFT JOIN posts ON threads.message_id=posts.id
 		LEFT JOIN users ON posts.user_id=users.id
@@ -83,7 +84,8 @@ def get_threads(topic):
 	return result.fetchall()
 
 def get_frontpage_threads():
-	sql = """SELECT threads.id, threads.title, threads.link, topics.url, users.username, posts.created, COUNT(thread_post.post_id) - 1 AS comment_count FROM threads
+	sql = """SELECT threads.id, threads.title, threads.link, topics.url, users.username,
+			posts.created, COUNT(thread_post.post_id) - 1 AS comment_count FROM threads
 		LEFT JOIN topics ON threads.topic_id=topics.id
 		LEFT JOIN posts ON threads.message_id=posts.id
 		LEFT JOIN users ON posts.user_id=users.id
@@ -123,8 +125,9 @@ def get_replies(post_id):
 	return rows
 
 def get_post(post_id):
-	sql = """SELECT posts.id, posts.status, users.username, posts.created, content.content, content.edited,
-			thread_post.thread_id, threads.title, threads.link, threads.message_id AS opener_id, topics.url, topics.title AS topic_title FROM posts
+	sql = """SELECT posts.id, posts.status, users.username, posts.created, content.content,
+			content.edited, thread_post.thread_id, threads.title, threads.link,
+			threads.message_id AS opener_id, topics.url, topics.title AS topic_title FROM posts
 		LEFT JOIN users ON users.id = posts.user_id
 		LEFT JOIN content ON content.post_id = posts.id
 		LEFT JOIN thread_post ON posts.id = thread_post.post_id
