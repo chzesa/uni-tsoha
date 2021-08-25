@@ -38,15 +38,16 @@
 		</div>
 </div>
 {% if session.username %}
-	</p>
-	<p>Reply
-	<form action="/reply/{{root.id}}" method="POST">
-		<textarea name="content" rows="2" cols="40"></textarea>
-		<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-		<br>
-		<input type="submit" value="Submit">
-	</form>
-	<hr>
+	<div class="dialog-box box">
+		<div class="title">Reply</div>
+		<form action="/reply/{{root.id}}" method="POST">
+			<textarea name="content" rows="2" cols="40"></textarea>
+			<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+			<div class="actions">
+				<input type="submit" value="Submit">
+			</div>
+		</form>
+	</div>
 {% endif %}
 <p>Comments:
 {% for post in replies %}

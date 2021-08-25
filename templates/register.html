@@ -1,24 +1,32 @@
-{% if session.username %}
+{% extends "layout.html" %}
+{% block navigation %}
+	<span>Register</span>
+{% endblock %}
+{% block content %}
+	{% if session.username %}
 
-<p>You are currently logged in as {{ session.username }}.</p>
-<a href="/">Front page</a>
-<a href="/logout">Logout</a>
-
-{% else %}
-
-<form action="/register" method="POST">
-
-<p>Username:<br>
-<input type="text" name="username"></p>
-
-<p>Password:<br>
-<input type="password" name="password"></p>
-
-<p>Confirm Password:<br>
-<input type="password" name="password_confirm"></p>
-
-<input type="submit" value="Register">
-
-</form>
-
-{% endif %}
+	<div class="dialog-box box">
+		<div class="title">You are currently logged in as {{ session.username }}.</div>
+		<div class="actions">
+			<div><a href="/">Front page</a></div>
+			<div><a href="/logout">Logout</a></div>
+		</div>
+	</div>
+	{% else %}
+		<div class="dialog-box box">
+			<div class="title">Register</div>
+			<form action="/register" method="POST">
+				<label for="username">Username:</label><br>
+				<input type="text" name="username"><br>
+				<label for="password">Password:</label><br>
+				<input type="password" name="password"><br>
+				<label for="password_confirm">Confirm Password:</label><br>
+				<input type="password" name="password_confirm"><br>
+				<div class="actions">
+					<div><input type="submit" value="Register"></div>
+					<div><a href="/login">Login</a></div>
+				</div>
+			</form>
+		</div>
+	{% endif %}
+{% endblock %}

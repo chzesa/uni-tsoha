@@ -1,3 +1,8 @@
-<p>Something went wrong.
-<p>{{ msg }}
-<p><a href="{{redirect}}">Return</a>
+{% extends "layout.html" %}
+{% block content %}
+	<div class="dialog-box box">
+		<div class="title">Something went wrong:</div>
+		<div class="description">{{ msg }}</div>
+		<div class="actions"><a href="{{redirect}}">Return</a></div>
+	</div>
+{% endblock %}

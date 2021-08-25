@@ -9,14 +9,22 @@ a:link, a:visited {
 	text-decoration: none;
 }
 
+form {
+	margin: 0;
+}
+
 .main {
 	max-width: 50rem;
 	margin: 4rem auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1.6rem;
 }
-
+/*
 .main>div {
 	margin: 1.6rem 0;
-}
+}*/
 
 .box {
 	background-color: white;
@@ -25,7 +33,7 @@ a:link, a:visited {
 }
 
 .post {
-	
+	width: 100%;
 }
 
 .post>.title {
@@ -47,18 +55,36 @@ a:link, a:visited {
 	align-items: center;
 	display: flex;
 	flex-direction: column;
+	padding: 2rem;
+	width: 60%;
 }
 
 .dialog-box>.title {
 	font-size:  1.3rem;
+	margin-bottom: 1rem;
 }
 
-.dialog-box>.actions {
-	display: flex;
+.dialog-box>.description {
+	margin-bottom: 1rem;
+}
+
+.dialog-box>.actions,
+.dialog-box>form>.actions {
 	flex-direction: row;
+	display: flex;
+	/*justify-content: center;*/
+	align-items: center;
 }
 
-.dialog-box>.actions>div {
+.dialog-box>form>.actions {
+	flex-direction: row;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.dialog-box>.actions>div,
+.dialog-box>form>.actions>div {
 	margin: 0.5rem;
 }
 
@@ -78,4 +104,26 @@ a:link, a:visited {
 .navigation>a:not(:first-child):before,
 .navigation>span:not(:first-child):before {
 	content: " > ";
+}
+
+textarea {
+	resize: vertical;
+}
+
+input[type=submit] {
+	color: white;
+	font-size: 1rem;
+	background-color: #2196F3;
+	/*width: 100%;*/
+	/*background-color: #4CAF50;*/
+	/*color: white;*/
+	padding: 0.5rem;
+	/*margin: 8px 0;*/
+	border: none;
+	border-radius: 0;
+	/*cursor: pointer;*/
+}
+
+input[type=submit]:hover {
+	background-color: #1976D2;
 }

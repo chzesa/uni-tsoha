@@ -1,9 +1,23 @@
-<h1>Editing</h1>
-<p>{{post.content}}
-<p> posted on {{post.edited}} in <a href="/topic/{{post.url}}">{{ post.url }}</a>: <a href="/thread/{{post.thread_id}}">{{ post.title }}</a>{% if post.link %} (<a href="{{post.link}}">{{post.link}}</a>){% endif %}
-<form action="/edit/{{post.id}}" method="POST">
-<textarea name="content" rows="2" cols="40"></textarea>
-<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-<br>
-<input type="submit" value="Submit">
-</form>
+{% extends "layout.html" %}
+{% block content %}
+<div class="post box">
+	<div class="content">{{ post.content }}</div>
+	<div class="footer">
+		<span>posted by <a href="/user/{{ post.username }}">{{ post.username }}</span>
+		<a href="/thread/{{post.thread_id}}">{{ post.title }}</a>
+		<span>in <a href="/topic/{{post.url}}">{{ post.url }}</a></span>
+		<span>on {{ post.edited }}</span>
+	</div>
+</div>
+<div class="dialog-box box">
+	<div class="title">Edit post</div>
+	<form action="/edit/{{post.id}}" method="POST">
+		<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+		<textarea name="content" rows="2" cols="40"></textarea>
+		<div class="actions">
+			<input type="submit" value="Submit">
+			<div><a href="/thread/{{post.thread_id}}">Cancel</a></div>
+		</div>
+	</form>
+</div>
+{% endblock %}
