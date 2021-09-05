@@ -130,7 +130,7 @@ def edit(id):
 	if not p or p.status == posts.DELETED_VALUE:
 		return error("Post does not exist or it has been deleted.", "/")
 
-	if not p.username == users.user_name() and not users.is_admin():
+	if p.username != users.user_name() and not users.is_admin():
 		# TODO check if user has edit rights in sql statement
 		return abort(403)
 
@@ -160,7 +160,7 @@ def delete(id):
 	if not p or p.status == posts.DELETED_VALUE:
 		return error("Post does not exist or it has been deleted.", "/")
 
-	if not p.username == users.user_name() and not users.is_admin():
+	if p.username != users.user_name() and not users.is_admin():
 		# TODO check if user has edit rights in sql statement
 		return abort(403)
 
