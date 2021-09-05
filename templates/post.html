@@ -52,29 +52,33 @@
 <p>Comments:
 <div class="replies">
 	{% for post in replies %}
-	<div class="post box" style="margin-left: {{(post.level - 1) * 2}}rem">
-		{% if post.status == 3 %}
-			<div class="content">Deleted</div>
+		{% if post.parent_id == root.id %}
+			<div class="post box" style="margin-left: {{(post.level - 1) * 2}}rem" post_id="{{post.id}}">
 		{% else %}
-			<div class="content">{{ post.content }}</div>
-			<div class="footer">
-				<span>posted by <a href="/user/{{ post.username }}">{{ post.username }}</a></span>
-				<span>on {{ post.created }}</span>
-				{% if session.username %}
-					<a href="/reply/{{post.id}}">reply</a>
-				{% endif %}
-				{% if post.username == session.username %}
-					<a href="/edit/{{post.id}}">edit</a>
-				{% endif %}
-				{% if post.username == session.username or session.is_admin %}
-					<a href="/delete/{{post.id}}">delete</a>
-				{% endif %}
-				{% if session.is_admin %}
-					<a href="/hide/{{post.id}}">hide</a>
-				{% endif %}
-			</div>
+			<div class="post box" style="margin-left: {{(post.level - 1) * 2}}rem" parent_id="{{post.parent_id}}" post_id="{{post.id}}">
 		{% endif %}
-	</div>
+			{% if post.status == 3 %}
+				<div class="content">Deleted</div>
+			{% else %}
+				<div class="content">{{ post.content }}</div>
+				<div class="footer">
+					<span>posted by <a href="/user/{{ post.username }}">{{ post.username }}</a></span>
+					<span>on {{ post.created }}</span>
+					{% if session.username %}
+						<a href="/reply/{{post.id}}">reply</a>
+					{% endif %}
+					{% if post.username == session.username %}
+						<a href="/edit/{{post.id}}">edit</a>
+					{% endif %}
+					{% if post.username == session.username or session.is_admin %}
+						<a href="/delete/{{post.id}}">delete</a>
+					{% endif %}
+					{% if session.is_admin %}
+						<a href="/hide/{{post.id}}">hide</a>
+					{% endif %}
+				</div>
+			{% endif %}
+		</div>
 	{% endfor %}
 </div>
 
