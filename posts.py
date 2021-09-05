@@ -118,7 +118,7 @@ def get_replies(post_id):
     sql = """
         SELECT * FROM (
             WITH RECURSIVE T1
-                (id, user_id, created, status, parent_id, level)
+                (id, user_id, parent_id, created, status, level)
             AS (
                 SELECT id, user_id, parent_id, created, status, 1 FROM posts WHERE parent_id=:post_id
                 UNION ALL
