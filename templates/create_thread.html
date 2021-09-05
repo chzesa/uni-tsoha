@@ -1,19 +1,30 @@
-<a href="/topic/{{topic}}">Back</a>
-<p>Create new thread
-<form action="/create_thread/{{topic}}" method="POST">
-<p>Title:<br>
-<input type="text" name="title"></p>
+{% extends "layout.html" %}
 
-<p>Link *<br>
-<input type="text" name="link"></p>
+{% block navigation %}
+	<a href="/topics">Topics</a>
+	<a href="/topic/{{topic}}">{{ topic }}</a>
+	<span>Create Thread</span>
+{% endblock %}
 
-<p>Content *<br>
-<textarea name="content" rows="2" cols="40"></textarea>
+{% block content %}
+<div class="dialog-box box">
+	<div class="title">Create new thread</div>
+	<form action="/create_thread/{{topic}}" method="POST">
+		<p>Title:<br>
+		<input id="thread_title" type="text" name="title"></p>
+		<p>Link *<br>
+		<input id="thread_link" type="text" name="link"></p>
+		<p>Content *<br>
+		<textarea id="post_content" name="content" rows="2" cols="40"></textarea>
 
-<p>* At least one of these fields must be filled.
+		<p>* At least one of these fields must be filled.
+		<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+		<div class="actions">
+			<input type="submit" value="Submit">
+		</div>
 
-<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-<br>
-<input type="submit" value="Submit">
+	</form>
+</div>
 
-</form>
+
+{% endblock %}
