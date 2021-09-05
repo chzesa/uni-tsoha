@@ -136,7 +136,10 @@ def get_replies(post_id):
             WHERE posts.parent_id = T1.id
         )
         SELECT T2.content, username, T1.id, T1.parent_id, T1.status, T1.created, level FROM T1
-        LEFT JOIN (SELECT DISTINCT ON (post_id) post_id, edited, content FROM content ORDER BY content.post_id, content.edited DESC) AS T2 ON T2.post_id = T1.id
+        LEFT JOIN (
+            SELECT DISTINCT ON (post_id) post_id, edited, content FROM content
+            ORDER BY content.post_id, content.edited DESC
+        ) AS T2 ON T2.post_id = T1.id
         LEFT JOIN users ON users.id = T1.user_id
         """
     result = db.session.execute(sql, {"post_id": post_id})
