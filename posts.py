@@ -141,6 +141,7 @@ def get_post(post_id):
 
 def get_posts_by_user(username):
 	user_id = users.id_from_username(username)
+	# The outer query is only used to reorder the inner query.
 	sql = """
 		SELECT * FROM (
 			SELECT DISTINCT ON (content.post_id) posts.id, posts.status, posts.created,
