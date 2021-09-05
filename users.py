@@ -9,7 +9,7 @@ def is_valid_username(username):
 	return re.match("\\w+", username) and len(username) > 2 and len(username) < 20
 
 def is_valid_password(pwd):
-	return len(pwd) > 7 and len(pwd) < 20
+	return len(pwd) > 7 and len(pwd) < 32
 
 def login(username, pwd):
 	sql = "SELECT id, pwd_hash FROM users WHERE username = :username;"
