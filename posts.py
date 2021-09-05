@@ -100,7 +100,7 @@ def get_frontpage_threads():
 def get_thread(thread_id):
 	sql = """SELECT posts.id, posts.status, users.username, posts.created, content.content,
 			T1.title, T1.link, T1.message_id AS opener_id, topics.url, topics.title AS topic_title
-		FROM (SELECT * FROM threads WHERE threads.id = :thread_id) AS T1
+		FROM (SELECT title, link, message_id, topic_id FROM threads WHERE threads.id = :thread_id) AS T1
 		LEFT JOIN topics ON T1.topic_id = topics.id
 		LEFT JOIN posts ON T1.message_id = posts.id
 		LEFT JOIN content ON content.post_id = posts.id
@@ -202,7 +202,7 @@ def hide(post_id):
 	db.session.commit()
 
 def is_opener(post_id):
-	sql = """SELECT * FROM posts WHERE id=:post_id AND parent_id IS NULL"""
+	sql = """SELECT id FROM posts WHERE id=:post_id AND parent_id IS NULL"""
 	result = db.session.execute(sql, {"post_id": post_id})
 	return result.fetchone() != None
 
