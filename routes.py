@@ -27,15 +27,15 @@ def register():
 		return error("Passwords do not match.", "/")
 
 	if not users.is_valid_username(user):
-		return error("Invalid username.", "/")
+		return error("Invalid username: Must be between 3 and 19 characters in length.", "/")
 
 	if not users.is_valid_password(pwd):
-		return error("Invalid password.", "/")
+		return error("Invalid password: Must be between 8 and 31 characters in length.", "/")
 
 	if users.register(user, pwd):
 		return redirect("/")
 
-	return error("Registration failed.", "/")
+	return error("Registration failed.", "/register")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -52,7 +52,7 @@ def login():
 	if users.login(user, pwd):
 		return redirect("/")
 	
-	return error("Login failed.", "/login");
+	return error("Invalid username or password", "/login");
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
@@ -82,16 +82,16 @@ def create_topic():
 		return abort(403)
 
 	if not posts.is_valid_topic_url(url):
-		return error("Invalid topic url.", "/")
+		return error("Invalid topic url: Must only contain alphanumeric characters and be under 128 characters long", "/")
 
 	if not posts.is_valid_topic_title(title):
-		return error("Invalid topic title.", "/")
+		return error("Invalid topic title: Must be under 128 characters and not empty", "/")
 
 	topic_id = posts.create_topic(url, title, description)
 	if topic_id != 0:
 		return redirect("/topic/" + url)
 
-	return error("Failed to create topic.", "/")
+	return error("Failed to create topic.", "/create_topic")
 
 @app.route("/topics", methods=["GET"])
 def topics():
@@ -144,7 +144,7 @@ def edit(id):
 	content = form["content"]
 
 	if not posts.is_valid_post_content(content):
-		return error("Replies must be under 1024 characters long.", "/")
+		return error("Replies must be under 1024 characters long and not empty.", "/")
 
 	if not posts.update_post_content(id, content, users.user_id()):
 		return abort(403)
@@ -217,7 +217,7 @@ def reply(id):
 	content = form["content"]
 
 	if not posts.is_valid_post_content(content):
-		return error("Replies must be under 1024 characters long.", "/")
+		return error("Replies must be under 1024 characters long and not empty.", "/thread/" + str(p.thread_id))
 
 	reply_id = posts.reply(id, content)
 
@@ -247,13 +247,13 @@ def create_thread(url):
 	content = form["content"]
 
 	if not posts.is_valid_thread_title(title):
-		return error("Invalid thread title.", "/")
+		return error("Invalid thread title: Must be under 128 characters long and not empty.", "/")
 
 	if link != "" and not posts.is_valid_thread_link(link):
 		return error("Malformed link url", "/")
 
 	if not posts.is_valid_post_content(content):
-		return error("Posts must have length under 1024 characters.", "/")
+		return error("Posts must have length under 1024 characters and not be empty.", "/")
 
 	if link == "" and content == "":
 		return error("At least one of link and content must not be empty.", "/")
