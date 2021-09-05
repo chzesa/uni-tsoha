@@ -115,6 +115,7 @@ def thread_id_from_post_id(id):
     return result.fetchone()[0]
 
 def get_replies(post_id):
+    # Could also be done by using thread_post table but that's less interesting
     sql = """
         WITH RECURSIVE T1
             (id, user_id, parent_id, created, status, level)
