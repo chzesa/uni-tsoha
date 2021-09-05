@@ -1,18 +1,28 @@
-<a href="/">Back</a>
-<p>Create new topic
-<form action="/create_topic" method="POST">
+{% extends "layout.html" %}
 
-<p>Url:<br>
-<input type="text" name="url"></p>
+{% block navigation %}
+	<a href="/topics">Topics</a>
+	<span>Create new topic</span>
+{% endblock %}
 
-<p>Title:<br>
-<input type="text" name="title"></p>
+{% block content %}
+<div class="dialog-box box">
+	<div class="title">Create new topic</div>
+	<form action="/create_topic" method="POST">
+		<p>Url:<br>
+		<input type="text" name="url"></p>
+		<p>Title:<br>
+		<input type="text" name="title"></p>
+		<p>Description (optional):<br>
+		<textarea name="description" rows="2" cols="40"></textarea>
+		<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
-<p>Description (optional):<br>
-<textarea name="description" rows="2" cols="40"></textarea>
-<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+		<div class="actions">
+			<input type="submit" value="Create">
+		</div>
 
-<br>
-<input type="submit" value="Create">
+	</form>
+</div>
 
-</form>
+
+{% endblock %}
