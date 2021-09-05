@@ -116,21 +116,17 @@ def thread_id_from_post_id(id):
 
 def get_replies(post_id):
     sql = """
-        SELECT * FROM (
-            WITH RECURSIVE T1
-                (id, user_id, parent_id, created, status, level)
-            AS (
-                SELECT id, user_id, parent_id, created, status, 1 FROM posts WHERE parent_id=:post_id
-                UNION ALL
-                SELECT posts.id, posts.user_id, posts.parent_id, posts.created, posts.status, T1.level + 1 FROM posts, T1
-                WHERE posts.parent_id = T1.id
-            )
-            SELECT DISTINCT ON (content.post_id) content, username, T1.id, T1.parent_id, T1.status, T1.created, level FROM T1
-            LEFT JOIN content ON content.post_id = T1.id
-            LEFT JOIN users ON users.id = T1.user_id
-            ORDER BY content.post_id, content.edited DESC
-        )  AS T2
-        ORDER BY T2.parent_id, T2.created
+        WITH RECURSIVE T1
+            (id, user_id, parent_id, created, status, level)
+        AS (
+            SELECT id, user_id, parent_id, created, status, 1 FROM posts WHERE parent_id=:post_id
+            UNION ALL
+            SELECT posts.id, posts.user_id, posts.parent_id, posts.created, posts.status, T1.level + 1 FROM posts, T1
+            WHERE posts.parent_id = T1.id
+        )
+        SELECT T2.content, username, T1.id, T1.parent_id, T1.status, T1.created, level FROM T1
+        LEFT JOIN (SELECT DISTINCT ON (post_id) post_id, edited, content FROM content ORDER BY content.post_id, content.edited DESC) AS T2 ON T2.post_id = T1.id
+        LEFT JOIN users ON users.id = T1.user_id
         """
     result = db.session.execute(sql, {"post_id": post_id})
     rows = result.fetchall()
