@@ -13,7 +13,7 @@
 	<div class="title">Edit post</div>
 	<form action="/edit/{{post.id}}" method="POST">
 		<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-		<textarea name="content" rows="2" cols="40"></textarea>
+		<textarea name="content" rows="2" cols="40">{{ post.content }}</textarea>
 		<div class="actions">
 			<input type="submit" value="Submit">
 			<div><a href="/thread/{{post.thread_id}}">Cancel</a></div>
