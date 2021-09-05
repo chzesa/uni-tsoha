@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block content %}
+<h1>{{ topic }}</h1>
 {% for thread in threads %}
 <div class="post box">
 	<div class="title">{{ thread.title }} {% if thread.link %}(<a href="{{thread.link}}">{{ thread.link }}</a>){% endif %}</div>

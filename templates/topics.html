@@ -4,6 +4,7 @@
 	<a href="/create_topic">Create new topic</a>
 {% endblock %}
 {% block content %}
+<h1>Topics</h1>
 {% for topic in topics %}
 	<div class="post box">
 		<div class="title">{{ topic.title }} (<a href="/topic/{{ topic.url }}">{{ topic.url }}</a>)</div>
